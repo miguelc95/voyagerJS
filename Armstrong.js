@@ -98,7 +98,7 @@ Armstrong.prototype.enterOperando = function(ctx){
             this.PTypes.push(v.tipo)
             //elif checar con var globales
         }else{
-            console.log("Error la variable no esta declarada");
+            console.log("Error la variable no esta declarada",ctx.ID().getText());
             //checar caso llamada y vector
         }
 

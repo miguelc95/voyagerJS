@@ -1,0 +1,22 @@
+programa {
+    var entero var1;
+    vacio hi () {
+	imprimir("hivrvrevr_ecerfer?r/fvv[]er"); 
+    }
+
+    bool hi () {
+        regresa true;
+    }
+    
+    entero bye () {
+    var bool a;
+    a = falso;
+	regresa a; 
+    }
+ 
+   main {
+       var1 = bye();
+        hi();
+   }
+   
+}

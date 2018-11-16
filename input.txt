@@ -5,13 +5,18 @@ programa {
     }
 
     bool hi () {
-        regresa true;
+        regresa verdadero;
     }
-    
+
     entero bye () {
     var bool a;
-    a = falso;
-	regresa a; 
+    var entero b;
+    b = 1 - 3;
+    a = a  || falso;
+    si (a && falso){
+
+    }
+	regresa b; 
     }
  
    main {

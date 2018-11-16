@@ -22,7 +22,7 @@ python3 __main__.py input.txt <br/>
 
 # To run in Javascript
 
-antlr4 -Dlanguage=JavaScript MyGrammar.g4
+antlr4 -Dlanguage=JavaScript Voyager.g4
 
 node main.js input.txt
 

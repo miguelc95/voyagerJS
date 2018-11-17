@@ -5,8 +5,9 @@ class func {
     constructor(tipo, nombre) {
         this.arrVariable = [];
         this.parameterTable = [];
-        this.tipo = tipo
-        this.nombre = nombre
+        this.tipo = tipo;
+        this.nombre = nombre;
+        this.numParam = 0;
         this.inicio = -1;
     }
 

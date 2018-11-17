@@ -24,15 +24,6 @@ class func {
         console.log(this.tipo, this.nombre, this.arrVariable, this.parameterTable)
     }
 
-    getVarByName(nombre) {
-        this.arrVariable.forEach(element => {
-            if (element.nombre == nombre) {
-                return val;
-            } else {
-                return null
-            }
-        });
-    }
 }
 
 exports.func = func;

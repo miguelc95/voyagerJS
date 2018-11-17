@@ -34,12 +34,11 @@ Armstrong.prototype.constructor = Armstrong;
 
 
 Armstrong.prototype.enterFunc = function(ctx) {
-    console.log("enterAc", this.actualCtx)
+
+    this.actualCtx = ctx.ID().getText();
     if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
         console.log('Error ya existe una función con ese nombre')
     } else {
-        this.actualCtx = ctx.ID().getText();
-        console.log("Actual", this.actualCtx);
 
         //reset locales y temporales
         let funcObj = new func(ctx.typefunc().getText(), ctx.ID().getText())
@@ -55,7 +54,7 @@ Armstrong.prototype.enterFunc = function(ctx) {
         });
         funcObj.numParam = funcObj.parameterTable.length;
         this.tablaFunc.dir[ctx.ID().getText()] = funcObj;
-        console.log(this.tablaFunc);
+
 
 
     }
@@ -66,8 +65,7 @@ Armstrong.prototype.exitFunc = function(ctx) {
 }
 
 Armstrong.prototype.enterAfterDeclaracion = function(ctx) {
-    console.log("enterAc", this.actualCtx)
-    console.log("enterAf", this.tablaFunc.dir[this.actualCtx].arrVariable);
+
 
     this.tablaFunc.dir[this.actualCtx].numVars = this.tablaFunc.dir[this.actualCtx].arrVariable.length;
     this.tablaFunc.dir[this.actualCtx].inicio = this.Quads.length;
@@ -125,7 +123,7 @@ Armstrong.prototype.enterOperando = function(ctx) {
 
     } else if (ctx.ID() != null) {
         let id = ctx.ID().getText();
-        let v = this.tablaFunc.dir[this.actualCtx].getVarByName(id);
+        let v = this.tablaFunc.dir[this.actualCtx].arrVariable[id];
         if (v != null) {
             this.PilaO.push(v.dir_virtual)
             this.PTypes.push(v.tipo)
@@ -179,11 +177,12 @@ Armstrong.prototype.exitTermino = function(ctx) {
         let left_operand = this.PilaO.pop();
         let left_type = this.PTypes.pop();
         let operator = this.POper.pop();
+        console.log(right_type);
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
             let result = 0; //result <- AVAIL.next()
-            let newQuad = new Quad(operator, left_operand, right_operand, result);
-            this.Quad.push(newQuad);
+            let newQuad = new quad(operator, left_operand, right_operand, result);
+            this.Quads.push(newQuad);
             this.PilaO.push(result);
             this.PTypes.push(result_type);
             //If any operand were a temporal space, return it to avail
@@ -204,8 +203,8 @@ Armstrong.prototype.exitExp = function(ctx) {
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
             let result = 0; //result <- AVAIL.next()
-            let newQuad = new Quad(operator, left_operand, right_operand, result);
-            this.Quad.push(newQuad);
+            let newQuad = new quad(operator, left_operand, right_operand, result);
+            this.Quads.push(newQuad);
             this.PilaO.push(result);
             this.PTypes.push(result_type);
             //If any operand were a temporal space, return it to avail
@@ -221,13 +220,17 @@ Armstrong.prototype.exitExpbool = function(ctx) {
         let right_operand = this.PilaO.pop();
         let right_type = this.PTypes.pop();
         let left_operand = this.PilaO.pop();
+        console.log(this.PTypes);
         let left_type = this.PTypes.pop();
         let operator = this.POper.pop();
+        console.log(left_type, right_type, );
+        console.log(cubo[left_type]);
+
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
             let result = 0; //result <- AVAIL.next()
-            let newQuad = new Quad(operator, left_operand, right_operand, result);
-            this.Quad.push(newQuad);
+            let newQuad = new quad(operator, left_operand, right_operand, result);
+            this.Quads.push(newQuad);
             this.PilaO.push(result);
             this.PTypes.push(result_type);
             //If any operand were a temporal space, return it to avail

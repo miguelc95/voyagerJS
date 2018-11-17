@@ -11,7 +11,7 @@
             "<": "bool",
             ">": "bool",
             "&&": "error",
-            "||": "error"
+            "||": "error" 
         },
         "bool": {
             "+":"error",

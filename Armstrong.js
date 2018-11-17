@@ -25,7 +25,7 @@ var Armstrong = function() {
 };
 
 function fill(target, dir) {
-    Quads[target].loc = dir;
+    this.Quads[target].loc = dir;
 }
 
 // continue inheriting default listener
@@ -159,8 +159,52 @@ Armstrong.prototype.exitFactor = function(ctx) {
 
 }
 
-Armstrong.prototype.enterTermino = function(ctx) {
+Armstrong.prototype.exitTermino = function(ctx) {
     if (this.POper[this.POper.length - 1] == '+' || this.POper[this.POper.length - 1] == '-') {
+        let right_operand = this.PilaO.pop();
+        let right_type = this.PTypes.pop();
+        let left_operand = this.PilaO.pop();
+        let left_type = this.PTypes.pop();
+        let operator = this.POper.pop();
+        let result_type = cubo[left_type][right_type][operator];
+        if (result_type != "error") {
+            let result = 0; //result <- AVAIL.next()
+            let newQuad = new Quad(operator, left_operand, right_operand, result);
+            this.Quad.push(newQuad);
+            this.PilaO.push(result);
+            this.PTypes.push(result_type);
+            //If any operand were a temporal space, return it to avail
+        } else {
+            console.log("ERROR type mismatch");
+        }
+        console.log("ADIOS", result_type)
+    }
+}
+
+Armstrong.prototype.exitExp = function(ctx) {
+    if (this.POper[this.POper.length - 1] == '==' || this.POper[this.POper.length - 1] == '<' || this.POper[this.POper.length - 1] == '>' || this.POper[this.POper.length - 1] == '!=') {
+        let right_operand = this.PilaO.pop();
+        let right_type = this.PTypes.pop();
+        let left_operand = this.PilaO.pop();
+        let left_type = this.PTypes.pop();
+        let operator = this.POper.pop();
+        let result_type = cubo[left_type][right_type][operator];
+        if (result_type != "error") {
+            let result = 0; //result <- AVAIL.next()
+            let newQuad = new Quad(operator, left_operand, right_operand, result);
+            this.Quad.push(newQuad);
+            this.PilaO.push(result);
+            this.PTypes.push(result_type);
+            //If any operand were a temporal space, return it to avail
+        } else {
+            console.log("ERROR type mismatch");
+        }
+        console.log("ADIOS", result_type)
+    }
+}
+
+Armstrong.prototype.exitExpbool = function(ctx) {
+    if (this.POper[this.POper.length - 1] == '&&' || this.POper[this.POper.length - 1] == '||') {
         let right_operand = this.PilaO.pop();
         let right_type = this.PTypes.pop();
         let left_operand = this.PilaO.pop();
@@ -224,31 +268,40 @@ Armstrong.prototype.enterLee_condicion = function(ctx) {
 
     } else {
         res = this.PilaO.pop();
-        Quads.push(new quad("GotoF", res, null, null));
-        this.PJumps.push(quads.length - 1);
+        this.Quads.push(new quad("GotoF", res, null, null));
+        this.PJumps.push(this.Quads.length - 1);
 
     }
 
 }
 
 Armstrong.prototype.exitCondicion = function(ctx) {
-    let exp_type = this.PTypes.pop();
-    if (exp_type != "bool") {
-        console.log("Error, los tipos no concuerdan");
+    end = this.PJumps.pop();
+    fill(end, this.Quads.length);
 
-    } else {
-        res = this.PilaO.pop();
-        Quads.push(new quad("GotoF", res, null, null));
-        this.PJumps.push(quads.length - 1);
+}
 
-    }
+Armstrong.prototype.enterCondicion1 = function(ctx) {
+    this.Quads.push(new quad("Goto", null, null, null));
+    falso = this.PJumps.pop();
+    this.PJumps.push(this.Quads.length - 1);
+    fill(falso, this.Quads.length);
+};
+
+Armstrong.prototype.enterCiclo = function(ctx) {
+    this.PJumps.push(this.Quads.length);
+};
+
+Armstrong.prototype.exitCiclo = function(ctx) {
+    end = this.PJumps.pop();
+    ret = this.PJumps.pop();
+    this.Quads.push(new quad("Goto", ret, null, null));
+    fill(end, this.Quads.length);
 
 }
 
 
-Armstrong.prototype.exitExp = function(ctx) {
 
-};
 
 
 

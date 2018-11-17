@@ -1,31 +1,32 @@
 const variable = require('./variable')
-class func{
+class func {
 
 
-    constructor(tipo,nombre){
+    constructor(tipo, nombre) {
         this.arrVariable = [];
         this.parameterTable = [];
         this.tipo = tipo
         this.nombre = nombre
+        this.inicio = -1;
     }
 
-    addVariable(val){
+    addVariable(val) {
         this.arrVariable.push(val);
     }
 
-    addParamType(tipo){
+    addParamType(tipo) {
         this.parameterTable.push(tipo);
     }
 
-    printFunc(){
-        console.log(this.tipo,this.nombre,this.arrVariable,this.parameterTable)
+    printFunc() {
+        console.log(this.tipo, this.nombre, this.arrVariable, this.parameterTable)
     }
 
-    getVarByName(nombre){
+    getVarByName(nombre) {
         this.arrVariable.forEach(element => {
-            if (element.nombre == nombre){
+            if (element.nombre == nombre) {
                 return val;
-            }else{
+            } else {
                 return null
             }
         });

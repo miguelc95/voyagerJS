@@ -23,9 +23,9 @@ bloquefunc1            : REGRESA expresion SEMI_COLON | /*epsilon*/;
 
 typefunc               : tipo | VACIO;
 
-bloquefunc             : ABRE_BRACKET bloque2 bloque1 bloquefunc1 CIERRA_BRACKET;
+bloquefunc             : ABRE_BRACKET bloque2 afterDeclaracion bloque1 bloquefunc1 CIERRA_BRACKET;
 bloque                 : ABRE_BRACKET bloque1 CIERRA_BRACKET;
-
+afterDeclaracion       : /*epsilon*/;
 
 vector                 : ID ABRE_CORCHETE exp CIERRA_CORCHETE | /*epsilon*/;
 vector_asigna          : ID ABRE_CORCHETE exp CIERRA_CORCHETE | /*epsilon*/;

@@ -128,6 +128,15 @@ VoyagerListener.prototype.exitBloque = function(ctx) {
 };
 
 
+// Enter a parse tree produced by VoyagerParser#afterDeclaracion.
+VoyagerListener.prototype.enterAfterDeclaracion = function(ctx) {
+};
+
+// Exit a parse tree produced by VoyagerParser#afterDeclaracion.
+VoyagerListener.prototype.exitAfterDeclaracion = function(ctx) {
+};
+
+
 // Enter a parse tree produced by VoyagerParser#vector.
 VoyagerListener.prototype.enterVector = function(ctx) {
 };

@@ -34,11 +34,13 @@ Armstrong.prototype.constructor = Armstrong;
 
 
 Armstrong.prototype.enterFunc = function(ctx) {
-    this.actualCtx = ctx.ID().getText();
-    if (this.tablaFunc[ctx.ID().getText()] != undefined) {
+    console.log("enterAc", this.actualCtx)
+    if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
         console.log('Error ya existe una función con ese nombre')
     } else {
         this.actualCtx = ctx.ID().getText();
+        console.log("Actual", this.actualCtx);
+
         //reset locales y temporales
         let funcObj = new func(ctx.typefunc().getText(), ctx.ID().getText())
         this.actualCtx = ctx.ID().getText()
@@ -51,13 +53,24 @@ Armstrong.prototype.enterFunc = function(ctx) {
             // console.log(nombre.getText());
             // funcObj.printFunc();
         });
-        this.tablaFunc.addFunc(ctx.ID().getText(), funcObj)
+        funcObj.numParam = funcObj.parameterTable.length;
+        this.tablaFunc.dir[ctx.ID().getText()] = funcObj;
+        console.log(this.tablaFunc);
 
 
     }
 }
 Armstrong.prototype.exitFunc = function(ctx) {
-    this.actualCtx = 'global'
+    this.tablaFunc.dir[this.actualCtx].arrVariable = [];
+    this.actualCtx = 'global';
+}
+
+Armstrong.prototype.enterAfterDeclaracion = function(ctx) {
+    console.log("enterAc", this.actualCtx)
+    console.log("enterAf", this.tablaFunc.dir[this.actualCtx].arrVariable);
+
+    this.tablaFunc.dir[this.actualCtx].numVars = this.tablaFunc.dir[this.actualCtx].arrVariable.length;
+    this.tablaFunc.dir[this.actualCtx].inicio = this.Quads.length;
 }
 
 Armstrong.prototype.enterOperando = function(ctx) {
@@ -286,11 +299,11 @@ Armstrong.prototype.enterCondicion1 = function(ctx) {
     falso = this.PJumps.pop();
     this.PJumps.push(this.Quads.length - 1);
     fill(falso, this.Quads.length);
-};
+}
 
 Armstrong.prototype.enterCiclo = function(ctx) {
     this.PJumps.push(this.Quads.length);
-};
+}
 
 Armstrong.prototype.exitCiclo = function(ctx) {
     end = this.PJumps.pop();

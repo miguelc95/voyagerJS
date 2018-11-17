@@ -8,6 +8,7 @@ class func {
         this.tipo = tipo;
         this.nombre = nombre;
         this.numParam = 0;
+        this.numVars = 0;
         this.inicio = -1;
     }
 

@@ -1,11 +1,10 @@
+class variable {
 
-class variable{
-
-    constructor(nombre,tipo){
+    constructor(nombre, tipo) {
         this.nombre = nombre;
         this.tipo = tipo;
         this.dir_virtual = -11;
-        this.dim = false;
+        this.dim = null;
         this.nombre = ""
         this.tipo = ""
     }

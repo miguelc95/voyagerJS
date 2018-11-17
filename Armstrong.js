@@ -9,16 +9,20 @@ const quad = require('./Tablas/Structs/quad').quad;
 
 var Armstrong = function() {
     this.tablaFunc = new dirFunc();
-    this.listFunc = []
-        // pilaO operandos
-    this.PilaO = []
-    this.PJumps = []
-    this.PTypes = []
-    this.POper = []
-    this.Quads = []
-    this.dirConst = []
-    this.dir = -1
-    this.actualCtx = ''
+    this.listFunc = [];
+    // pilaO operandos
+    this.PilaO = [];
+    this.PJumps = [];
+    this.PTypes = [];
+    this.POper = [];
+    this.Quads = [];
+    this.dirConst = [];
+    this.actualCtx = '';
+
+    //temporales
+    this.dir = -1;
+    this.parCount = 0;
+    this.llamadaCtx = '';
 
     VoyagerListener.call(this); // inherit default listener
     return this;
@@ -60,7 +64,8 @@ Armstrong.prototype.enterFunc = function(ctx) {
     }
 }
 Armstrong.prototype.exitFunc = function(ctx) {
-    this.tablaFunc.dir[this.actualCtx].arrVariable = [];
+    //checar borrar
+    //this.tablaFunc.dir[this.actualCtx].arrVariable = [];
     this.actualCtx = 'global';
 }
 
@@ -316,10 +321,59 @@ Armstrong.prototype.exitCiclo = function(ctx) {
 
 }
 
+Armstrong.prototype.enterLlamada = function(ctx) {
+    if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
+        this.llamadaCtx = ctx.ID().getText();
+        parCount = 0;
+        ini = this.tablaFunc.dir[ctx.ID().getText()].tipo;
+        this.Quads.push(new quad("ERA", ini, null, null));
+
+    } else {
+        console.log('Error ya existe una función con ese nombre')
+    }
+}
+
+Armstrong.prototype.enterTerminaArg = function(ctx) {
+    arg = this.PilaO.pop();
+    argType = this.PTypes.pop();
+    if (this.tablaFunc.dir[this.llamadaCtx].parameterTable[this.parCount] == argType) {
+        this.Quads.push(new quad("PARAM", arg, null, this.parCount));
+        parCount++;
+
+    } else {
+        console.log('Error, tipo de argumento incorrecto')
+    }
 
 
+}
 
+Armstrong.prototype.exitLlamada = function(ctx) {
+    if (parCount == this.tablaFunc.dir[this.llamadaCtx].parameterTable.length) {
+        this.Quads.push(new quad("GOSUB", this.llamadaCtx, null, this.tablaFunc.dir[this.llamadaCtx].inicio));
+        parCount = 0;
+        this.llamadaCtx = "";
+    } else {
+        console.log('Error el número de parametros no coincide')
+    }
+}
 
+//vector_acceso  : ID ABRE_CORCHETE exp acceso_afterExp CIERRA_CORCHETE | /*epsilon*/;
+Armstrong.prototype.enterVector_acceso = function(ctx) {
+    let esDim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
+        return v.nombre == ctx.ID().getText() && v.dim != null;
+    });
+    if (esDim != null) {
+        this.POper.push("[");
+    } else {
+        console.log(ctx.ID().getText() + 'No es variable dimensionada o no está declarada')
+    }
+}
 
+Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
+    let arr = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
+        return v.nombre == ctx.ID().getText();
+    });
+    this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], 0, arr.dim));
+}
 
 exports.Armstrong = Armstrong;

@@ -48,7 +48,8 @@ ciclo                  : MIENTRAS ABRE_PAREN expresion CIERRA_PAREN lee_condicio
 
 llamada                : ID ABRE_PAREN argumentos CIERRA_PAREN;
 
-argumentos             : expresion (COMA expresion )* |  /*epsilon*/;
+argumentos             : expresion terminaArg (COMA expresion terminaArg )* |  /*epsilon*/;
+terminaArg             : /*epsilon*/;
 
 expbool                : exp expbool1;
 expbool1               : MAS_QUE exp | MENOS_QUE exp | IGUAL_IGUAL exp | DIFERENTE_DE exp | /*epsilon*/;
@@ -66,7 +67,8 @@ factor                 : ABRE_PAREN expresion CIERRA_PAREN | operando;
 
 operando               : 'verdadero' | 'falso' | CTE_E | CTE_F | CTE_C | llamada | ID |  vector_acceso;
 
-vector_acceso          : ID ABRE_CORCHETE exp CIERRA_CORCHETE | /*epsilon*/;
+vector_acceso          : ID ABRE_CORCHETE exp acceso_afetrExp CIERRA_CORCHETE | /*epsilon*/;
+acceso_afetrExp        :  /*epsilon*/;
 
 tipo                   : ENTERO | FLOTANTE | BOOL | CHAR;
 

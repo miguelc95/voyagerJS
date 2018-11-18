@@ -128,7 +128,9 @@ Armstrong.prototype.enterOperando = function(ctx) {
 
     } else if (ctx.ID() != null) {
         let id = ctx.ID().getText();
-        let v = this.tablaFunc.dir[this.actualCtx].arrVariable[id];
+        let v = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
+            return v.nombre == id;
+        });
         if (v != null) {
             this.PilaO.push(v.dir_virtual)
             this.PTypes.push(v.tipo)
@@ -378,7 +380,56 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
     let t = -1 ///generarle una nueva dir temporal
     this.Quads.push(new quad("+", aux1, vardim.dir_virtual, t));
     this.PilaO.push("(t)");
+    this.PTypes.push(vardim.tipo);
     this.POper.pop();
 }
+
+/*declaracion            : VAR tipo idvector SEMI_COLON;
+idvector               : ID | vector;*/
+
+Armstrong.prototype.enterVector = function(ctx) {
+    let variable = new variable(ctx.ID().getText(), ctx.parent.parent.tipo().getText());
+    variable.dim = parseInt(ctx.CTE_E());
+    variable.dir_virtual = -1; //generar nueva dirección 
+    //+ espacios para todo su tamaño
+    //calcula la base para la sig variable dirBasae = dirbase+parseInt(ctx.CTE_E())
+    this.dirFunc.dir[this.actualCtx].arrVariable.push(variable);
+}
+
+Armstrong.prototype.enterIdvector = function(ctx) {
+    if (ctx.ID() != null) {
+        let variable = new variable(ctx.ID().getText(), ctx.parent.tipo().getText());
+        variable.dir_virtual = -1; //generar nueva dirección 
+        this.dirFunc.dir[this.actualCtx].arrVariable.push(variable);
+    }
+}
+
+/*asignacion             : idvector_asigna aferId IGUAL expresion SEMI_COLON;
+idvector_asigna        : ID | vector_acceso;*/
+Armstrong.prototype.enterIdvector_asigna = function(ctx) {
+    if (ctx.ID() != null) {
+        let variable = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
+            return v.nombre == ctx.ID().getText();
+        });
+        this.PilaO.push(variable.dir_virtual);
+        this.PTypes.push(variable.tipo);
+    }
+}
+
+Armstrong.prototype.exitAsignacion = function(ctx) {
+    let oDer = this.PTypes.pop();
+    let oIzq = this.PTypes.pop();
+    let result_type = cubo[oIzq][oDer]["="];
+    let val = this.PilaO.pop();
+    let dest = this.PilaO.pop();
+    if (result_type != "error") {
+        this.Quads.push(new quad("=", val, null, dest));
+    } else {
+        console.log("Error de tipos en la asignación");
+
+    }
+}
+
+
 
 exports.Armstrong = Armstrong;

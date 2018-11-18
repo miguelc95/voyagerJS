@@ -27,13 +27,12 @@ bloquefunc             : ABRE_BRACKET bloque2 afterDeclaracion bloque1 bloquefun
 bloque                 : ABRE_BRACKET bloque1 CIERRA_BRACKET;
 afterDeclaracion       : /*epsilon*/;
 
-vector                 : ID ABRE_CORCHETE exp CIERRA_CORCHETE | /*epsilon*/;
-vector_asigna          : ID ABRE_CORCHETE exp CIERRA_CORCHETE | /*epsilon*/;
+vector                 : ID ABRE_CORCHETE CTE_E CIERRA_CORCHETE;
 
 estatuto               : asignacion | condicion | imprimir | (llamada SEMI_COLON) | ciclo;
 
 asignacion             : idvector_asigna IGUAL expresion SEMI_COLON;
-idvector_asigna        : ID | vector_asigna;
+idvector_asigna        : ID | vector_acceso;
 
 condicion              : SI ABRE_PAREN expresion CIERRA_PAREN lee_condicion bloque condicion1;
 condicion1             : SINO bloque | /*epsilon*/;
@@ -67,7 +66,7 @@ factor                 : ABRE_PAREN expresion CIERRA_PAREN | operando;
 
 operando               : 'verdadero' | 'falso' | CTE_E | CTE_F | CTE_C | llamada | ID |  vector_acceso;
 
-vector_acceso          : ID ABRE_CORCHETE exp acceso_afetrExp CIERRA_CORCHETE | /*epsilon*/;
+vector_acceso          : ID ABRE_CORCHETE exp acceso_afetrExp CIERRA_CORCHETE;
 acceso_afetrExp        :  /*epsilon*/;
 
 tipo                   : ENTERO | FLOTANTE | BOOL | CHAR;

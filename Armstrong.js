@@ -44,11 +44,13 @@ Armstrong.prototype.constructor = Armstrong;
 
 Armstrong.prototype.enterFunc = function(ctx) {
 
-    this.actualCtx = ctx.ID().getText();
+
     if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
         console.log('Error ya existe una función con ese nombre')
     } else {
-
+        if (ctx.ID().getText() == "main") {
+            fill(0, this.Quads.length);
+        }
         //reset locales y temporales
         let funcObj = new func(ctx.typefunc().getText(), ctx.ID().getText())
         this.actualCtx = ctx.ID().getText()
@@ -294,7 +296,7 @@ Armstrong.prototype.enterLee_condicion = function(ctx) {
 
     } else {
         res = this.PilaO.pop();
-        this.Quads.push(new quad("GotoF", res, null, null));
+        this.Quads.push(new quad("GOTOF", res, null, null));
         this.PJumps.push(this.Quads.length - 1);
 
     }
@@ -308,7 +310,7 @@ Armstrong.prototype.exitCondicion = function(ctx) {
 }
 
 Armstrong.prototype.enterCondicion1 = function(ctx) {
-    this.Quads.push(new quad("Goto", null, null, null));
+    this.Quads.push(new quad("GOTO", null, null, null));
     falso = this.PJumps.pop();
     this.PJumps.push(this.Quads.length - 1);
     fill(falso, this.Quads.length);
@@ -321,7 +323,7 @@ Armstrong.prototype.enterCiclo = function(ctx) {
 Armstrong.prototype.exitCiclo = function(ctx) {
     end = this.PJumps.pop();
     ret = this.PJumps.pop();
-    this.Quads.push(new quad("Goto", ret, null, null));
+    this.Quads.push(new quad("GOTO", ret, null, null));
     fill(end, this.Quads.length);
 
 }
@@ -441,6 +443,12 @@ Armstrong.prototype.exitProgram = function(ctx) {
 }
 
 
+
+//bloquefunc  : ABRE_BRACKET bloque2 afterDeclaracion bloque1 bloquefunc1 CIERRA_BRACKET;
+
+Armstrong.prototype.exitAsignacion = function(ctx) {
+
+}
 
 
 exports.Armstrong = Armstrong;

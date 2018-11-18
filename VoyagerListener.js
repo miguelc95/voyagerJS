@@ -38,15 +38,6 @@ VoyagerListener.prototype.exitBloqueprogram = function(ctx) {
 };
 
 
-// Enter a parse tree produced by VoyagerParser#main.
-VoyagerListener.prototype.enterMain = function(ctx) {
-};
-
-// Exit a parse tree produced by VoyagerParser#main.
-VoyagerListener.prototype.exitMain = function(ctx) {
-};
-
-
 // Enter a parse tree produced by VoyagerParser#bloque1.
 VoyagerListener.prototype.enterBloque1 = function(ctx) {
 };
@@ -143,15 +134,6 @@ VoyagerListener.prototype.enterVector = function(ctx) {
 
 // Exit a parse tree produced by VoyagerParser#vector.
 VoyagerListener.prototype.exitVector = function(ctx) {
-};
-
-
-// Enter a parse tree produced by VoyagerParser#vector_asigna.
-VoyagerListener.prototype.enterVector_asigna = function(ctx) {
-};
-
-// Exit a parse tree produced by VoyagerParser#vector_asigna.
-VoyagerListener.prototype.exitVector_asigna = function(ctx) {
 };
 
 
@@ -263,6 +245,15 @@ VoyagerListener.prototype.exitArgumentos = function(ctx) {
 };
 
 
+// Enter a parse tree produced by VoyagerParser#terminaArg.
+VoyagerListener.prototype.enterTerminaArg = function(ctx) {
+};
+
+// Exit a parse tree produced by VoyagerParser#terminaArg.
+VoyagerListener.prototype.exitTerminaArg = function(ctx) {
+};
+
+
 // Enter a parse tree produced by VoyagerParser#expbool.
 VoyagerListener.prototype.enterExpbool = function(ctx) {
 };
@@ -359,6 +350,15 @@ VoyagerListener.prototype.enterVector_acceso = function(ctx) {
 
 // Exit a parse tree produced by VoyagerParser#vector_acceso.
 VoyagerListener.prototype.exitVector_acceso = function(ctx) {
+};
+
+
+// Enter a parse tree produced by VoyagerParser#acceso_afetrExp.
+VoyagerListener.prototype.enterAcceso_afetrExp = function(ctx) {
+};
+
+// Exit a parse tree produced by VoyagerParser#acceso_afetrExp.
+VoyagerListener.prototype.exitAcceso_afetrExp = function(ctx) {
 };
 
 

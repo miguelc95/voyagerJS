@@ -18,7 +18,7 @@ programa {
 	regresa b; 
     }
  
-   main {
+   vacio main() {
        var entero var1; 
        var1 = bye();
         hi();

@@ -6,14 +6,45 @@ class echo {
 
     constructor() {
         this.bases = [];
-        this.bases['Globales'] = [];
-        this.bases['Locales'] = [];
-        this.bases['Temporales'] = [];
-        this.bases['Constantes'] = [];
         this.constantes = [];
         this.globales = [];
         this.locales = [];
         this.temporales = [];
+        this.funcs = [[[]]];
+
+
+        //MEMORIA
+        this.memoria['Globales'] = [];
+        this.memoria['Locales'] = [];
+        this.memoria['Temporales'] = [];
+        this.memoria['Constantes'] = [];
+
+        this.memoria['Globales']['Int'] = [];
+        this.memoria['Globales']['Float'] = [];
+        this.memoria['Globales']['String'] = [];
+        this.memoria['Globales']['Bool'] = [];
+
+        this.memoria['Locales']['Int'] = [];
+        this.memoria['Locales']['Float'] = [];
+        this.memoria['Locales']['String'] = [];
+        this.memoria['Locales']['Bool'] = [];
+
+        this.memoria['Temporales']['Int'] = [];
+        this.memoria['Temporales']['Float'] = [];
+        this.memoria['Temporales']['String'] = [];
+        this.memoria['Temporales']['Bool'] = [];
+
+        this.memoria['Constantes']['Int'] = [];
+        this.memoria['Constantes']['Float'] = [];
+        this.memoria['Constantes']['String'] = [];
+        this.memoria['Constantes']['Bool'] = [];
+
+        //BASES
+        this.bases['Globales'] = [];
+        this.bases['Locales'] = [];
+        this.bases['Temporales'] = [];
+        this.bases['Constantes'] = [];
+
         this.bases['Globales']['Int'] = 0;
         this.bases['Globales']['Float'] = 2000;
         this.bases['Globales']['String'] = 4000;
@@ -199,28 +230,16 @@ class echo {
     }
 
     setValue(type,context,value){
-        switch (context) {
-            case 'Locales':
-                this.locales[type].push(value);
-            return this.bases['Locales'][type]+this.locales[type].length-1;
-                break;
-            case 'Globales':
-                this.globales[type].push(value);
-                return this.bases['Globales'][type]+this.globales[type].length-1;               
-                 break;
-            case 'Temporales':
-                this.temporales[type].push(value);
-                return this.bases['Temporales'][type]+this.temporales[type].length-1;
-                break;
-            case 'Constantes':
-                this.constantes[type].push(value);
-                return this.bases['Constantes'][type]+this.constantes[type].length-1;                
-                break;
-            default:
-            console.log("No se pudo guardar la variable en memoria")
-                break;
-        }
+        this.memoria[context][type].push(value);
+        return this.bases[context][type]+this.memoria[context][type].length-1;
     }
+
+
+    saveInAddress(val, address){
+        let [type,context] = this.getVarType(address);
+        this.memoria[context][type][address-this.bases[context][type]] = val;
+    }
+
 
 
 

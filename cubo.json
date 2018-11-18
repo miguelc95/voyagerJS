@@ -212,12 +212,12 @@
             "-": "error",
             "*": "error",
             "/": "error",
-            "==": "true",
-            "!=": "true",
-            "<": "true",
-            ">": "true",
-            "&&": "true",
-            "||": "true"
+            "==": "bool",
+            "!=": "bool",
+            "<": "bool",
+            ">": "bool",
+            "&&": "bool",
+            "||": "bool"
 
         }
     }

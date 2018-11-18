@@ -1,5 +1,4 @@
 programa {
-    var entero var1;
     vacio hi () {
 	imprimir("hivrvrevr_ecerfer?r/fvv[]er"); 
     }
@@ -20,6 +19,7 @@ programa {
     }
  
    main {
+       var entero var1; 
        var1 = bye();
         hi();
    }

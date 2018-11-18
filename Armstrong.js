@@ -4,7 +4,9 @@ const variable = require('./Tablas/Structs/variable').variable;
 var VoyagerListener = require('./VoyagerListener').VoyagerListener;
 const cubo = require('./cubo.json');
 const quad = require('./Tablas/Structs/quad').quad;
+const machine = require('./MaquinaVirtual').MaquinaVirtual;
 
+const echo = require('./echo').echo;
 
 
 var Armstrong = function() {
@@ -18,6 +20,7 @@ var Armstrong = function() {
     this.Quads = [];
     this.dirConst = [];
     this.actualCtx = '';
+    this.Memoria = new echo();
 
     //temporales
     this.dir = -1;
@@ -29,6 +32,8 @@ var Armstrong = function() {
 };
 
 function fill(target, dir) {
+    console.log("TARGET",target,dir)
+    console.log(this.Quads)
     this.Quads[target].loc = dir;
 }
 
@@ -114,7 +119,6 @@ Armstrong.prototype.enterOperando = function(ctx) {
             this.PTypes.push('char');
         }
     } else if (cteB == 'verdadero') {
-        console.log(cteB);
         // tener ya definidas dir para true y false
         //Meter dirección de verdadero a dir = 
         this.dir = this.dirConst['verdadero'];
@@ -167,6 +171,7 @@ Armstrong.prototype.exitFactor = function(ctx) {
             let result = 0; //result <- AVAIL.next()
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
+            console.log(this.Quads)
             this.PilaO.push(result);
             this.PTypes.push(result_type);
             //If any operand were a temporal space, return it to avail
@@ -227,11 +232,9 @@ Armstrong.prototype.exitExpbool = function(ctx) {
         let right_operand = this.PilaO.pop();
         let right_type = this.PTypes.pop();
         let left_operand = this.PilaO.pop();
-        console.log(this.PTypes);
         let left_type = this.PTypes.pop();
         let operator = this.POper.pop();
-        console.log(left_type, right_type, );
-        console.log(cubo[left_type]);
+
 
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
@@ -388,19 +391,20 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
 idvector               : ID | vector;*/
 
 Armstrong.prototype.enterVector = function(ctx) {
-    let variable = new variable(ctx.ID().getText(), ctx.parent.parent.tipo().getText());
+    let variable = new variable(ctx.ID().getText(), ctx.parentCtx.parentCtx.tipo().getText());
     variable.dim = parseInt(ctx.CTE_E());
     variable.dir_virtual = -1; //generar nueva dirección 
     //+ espacios para todo su tamaño
     //calcula la base para la sig variable dirBasae = dirbase+parseInt(ctx.CTE_E())
-    this.dirFunc.dir[this.actualCtx].arrVariable.push(variable);
+    this.tablaFunc.dir[this.actualCtx].arrVariable.push(variable);
 }
 
 Armstrong.prototype.enterIdvector = function(ctx) {
     if (ctx.ID() != null) {
-        let variable = new variable(ctx.ID().getText(), ctx.parent.tipo().getText());
-        variable.dir_virtual = -1; //generar nueva dirección 
-        this.dirFunc.dir[this.actualCtx].arrVariable.push(variable);
+        let varObj = new variable(ctx.ID().getText(), ctx.parentCtx.tipo().getText());
+        varObj.dir_virtual = -1; //generar nueva dirección 
+        console.log(this.tablaFunc)
+        this.tablaFunc.dir[this.actualCtx].arrVariable.push(varObj);
     }
 }
 
@@ -424,11 +428,18 @@ Armstrong.prototype.exitAsignacion = function(ctx) {
     let dest = this.PilaO.pop();
     if (result_type != "error") {
         this.Quads.push(new quad("=", val, null, dest));
+        console.log(this.Quads[0])
     } else {
         console.log("Error de tipos en la asignación");
 
     }
 }
+
+Armstrong.prototype.exitProgram = function(ctx) {
+ let MV = new MaquinaVirtual(this.tablaFunc,this.Quads,this.Memoria);
+ MV.start();
+}
+
 
 
 

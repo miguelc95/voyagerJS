@@ -1,33 +1,38 @@
 class echo {
-    bases = [];
-    constantes = [];
-    globales = [];
-    locales = [];
-    temporales = [];
+    
 
 
     //global,local,temporal,constante
 
     constructor() {
-        bases['Globales']['Int'] = 0
-        bases['Globales']['Float'] = 2000
-        bases['Globales']['String'] = 4000
-        bases['Globales']['Bool'] = 6000
+        this.bases = [];
+        this.bases['Globales'] = [];
+        this.bases['Locales'] = [];
+        this.bases['Temporales'] = [];
+        this.bases['Constantes'] = [];
+        this.constantes = [];
+        this.globales = [];
+        this.locales = [];
+        this.temporales = [];
+        this.bases['Globales']['Int'] = 0;
+        this.bases['Globales']['Float'] = 2000;
+        this.bases['Globales']['String'] = 4000;
+        this.bases['Globales']['Bool'] = 6000;
 
-        bases['Locales']['Int'] = 8000
-        bases['Locales']['Float'] = 10000
-        bases['Locales']['String'] = 12000
-        bases['Locales']['Bool'] = 14000
+        this.bases['Locales']['Int'] = 8000
+        this.bases['Locales']['Float'] = 10000
+        this.bases['Locales']['String'] = 12000
+        this.bases['Locales']['Bool'] = 14000
 
-        bases['Temporales']['Int'] = 16000
-        bases['Temporales']['Float'] = 18000
-        bases['Temporales']['String'] = 200000
-        bases['Temporales']['Bool'] = 22000
+        this.bases['Temporales']['Int'] = 16000
+        this.bases['Temporales']['Float'] = 18000
+        this.bases['Temporales']['String'] = 200000
+        this.bases['Temporales']['Bool'] = 22000
 
-        bases['Constantes']['Int'] = 24000
-        bases['Constantes']['Float'] = 26000
-        bases['Constantes']['String'] = 280000
-        bases['Constantes']['Bool'] = 30000
+        this.bases['Constantes']['Int'] = 24000
+        this.bases['Constantes']['Float'] = 26000
+        this.bases['Constantes']['String'] = 280000
+        this.bases['Constantes']['Bool'] = 30000
     }
 
     getContext(address){
@@ -130,45 +135,45 @@ class echo {
 
     setConstant(val, type){
         this.constantes[type].push(val);
-        return bases['Constantes'][type]+this.constantes[type].length-1;
+        return this.bases['Constantes'][type]+this.constantes[type].length-1;
     }
 
     setGlobal(val,type){
         this.globales[type].push(val);
-        return bases['Globales'][type]+this.globales[type].length-1;
+        return this.bases['Globales'][type]+this.globales[type].length-1;
     }
 
     setLocal(val,type){
         this.locales[type].push(val);
-        return bases['Locales'][type]+this.locales[type].length-1;
+        return this.bases['Locales'][type]+this.locales[type].length-1;
     }
 
     setTemporal(val,type){
         this.temporales[type].push(val);
-        return bases['Temporales'][type]+this.temporales[type].length-1;
+        return this.bases['Temporales'][type]+this.temporales[type].length-1;
     }
 
     getConstant(address){
     let [type,context] = this.getVarType(address);
-        return this.constantes[type][address-bases[context][type]];
+        return this.constantes[type][address-this.bases[context][type]];
 
     }
 
     getGlobal(address){
         let [type,context] = this.getVarType(address);
-            return this.globales[type][address-bases[context][type]];
+            return this.globales[type][address-this.bases[context][type]];
     
     }
 
     getLocal(address){
         let [type,context] = this.getVarType(address);
-            return this.locales[type][address-bases[context][type]];
+            return this.locales[type][address-this.bases[context][type]];
     
     }
 
     getTemporal(address){
         let [type,context] = this.getVarType(address);
-            return this.temporales[type][address-bases[context][type]];
+            return this.temporales[type][address-this.bases[context][type]];
     
     }
 

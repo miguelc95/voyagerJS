@@ -19,7 +19,7 @@ programa {
 	regresa b; 
     }
  
-   main {
+   vacio main (){
        var1 = bye();
         hi();
    }

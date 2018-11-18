@@ -9,11 +9,13 @@ voyager                : program+ EOF ;
 
 program                : PROGRAMA bloqueprogram;
 
-bloqueprogram          : ABRE_BRACKET bloque2 bloque3 main CIERRA_BRACKET;
-main                   : MAIN ABRE_BRACKET bloque1 CIERRA_BRACKET;
+bloqueprogram          : ABRE_BRACKET bloque2 bloque3 func CIERRA_BRACKET;
+
 bloque1                : estatuto bloque1 | /*epsilon*/;
 bloque2                : declaracion bloque2 | /*epsilon*/;
 bloque3                : func bloque3 | /*epsilon*/;
+
+
 
 func                   : typefunc ID ABRE_PAREN parametros CIERRA_PAREN bloquefunc;
 

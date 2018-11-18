@@ -26,6 +26,8 @@ var Armstrong = function() {
     this.dir = -1;
     this.parCount = 0;
     this.llamadaCtx = '';
+    this.return = falso;
+    this.returnType = '';
 
     VoyagerListener.call(this); // inherit default listener
     return this;
@@ -51,7 +53,7 @@ Armstrong.prototype.enterFunc = function(ctx) {
         if (ctx.ID().getText() == "main") {
             fill(0, this.Quads.length);
         }
-        //reset locales y temporales
+
         let funcObj = new func(ctx.typefunc().getText(), ctx.ID().getText())
         this.actualCtx = ctx.ID().getText()
         ctx.parametros().ID().forEach((nombre, i) => {
@@ -59,9 +61,7 @@ Armstrong.prototype.enterFunc = function(ctx) {
             let varObj = new variable(nombre.getText(), ctx.parametros().tipo()[i].getText());
             funcObj.addVariable(varObj);
             funcObj.addParamType(ctx.parametros().tipo()[i].getText());
-            // console.log(ctx.parametros().tipo()[i].getText())
-            // console.log(nombre.getText());
-            // funcObj.printFunc();
+
         });
         funcObj.numParam = funcObj.parameterTable.length;
         this.tablaFunc.dir[ctx.ID().getText()] = funcObj;
@@ -69,11 +69,6 @@ Armstrong.prototype.enterFunc = function(ctx) {
 
 
     }
-}
-Armstrong.prototype.exitFunc = function(ctx) {
-    //checar borrar
-    //this.tablaFunc.dir[this.actualCtx].arrVariable = [];
-    this.actualCtx = 'global';
 }
 
 Armstrong.prototype.enterAfterDeclaracion = function(ctx) {
@@ -344,7 +339,7 @@ Armstrong.prototype.enterTerminaArg = function(ctx) {
     arg = this.PilaO.pop();
     argType = this.PTypes.pop();
     if (this.tablaFunc.dir[this.llamadaCtx].parameterTable[this.parCount] == argType) {
-        this.Quads.push(new quad("PARAM", arg, null, this.parCount));
+        this.Quads.push(new quad("PARAM", arg, null, this.parCount - 1));
         parCount++;
 
     } else {
@@ -356,9 +351,15 @@ Armstrong.prototype.enterTerminaArg = function(ctx) {
 
 Armstrong.prototype.exitLlamada = function(ctx) {
     if (parCount == this.tablaFunc.dir[this.llamadaCtx].parameterTable.length) {
-        this.Quads.push(new quad("GOSUB", this.llamadaCtx, null, this.tablaFunc.dir[this.llamadaCtx].inicio));
+        this.Quads.push(new quad("GOSUB", this.llamadaCtx, this.Quads.length, this.tablaFunc.dir[this.llamadaCtx].inicio));
+        if (this.return) {
+            let dirT = -1; //genera temporal
+            this.Quads.push(new quad("=", "regresa", null, dirT));
+        }
+
         parCount = 0;
         this.llamadaCtx = "";
+
     } else {
         console.log('Error el número de parametros no coincide')
     }
@@ -380,7 +381,7 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
     let vardim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
         return v.nombre == ctx.ID().getText();
     });
-    this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], 0, vardim.dim));
+    this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], null, vardim.dim));
     let aux1 = this.PilaO.pop();
     let auxType = this.PTypes.pop();
     let t = -1 ///generarle una nueva dir temporal
@@ -438,14 +439,17 @@ Armstrong.prototype.exitAsignacion = function(ctx) {
     }
 }
 
-Armstrong.prototype.exitProgram = function(ctx) {
-    let MV = new MaquinaVirtual(this.tablaFunc, this.Quads, this.Memoria);
-    MV.start();
+//bloquefunc1  : REGRESA expresion SEMI_COLON | /*epsilon*/;
+Armstrong.prototype.exitBloquefunc1 = function(ctx) {
+    if (ctx.REGRESA() != null) {
+        let dirV = this.PilaO.pop();
+        this.returnType = this.PTypes.pop();
+        this.Quads.push(new quad("RETURN", dirV, null, null));
+        this.return = true;
+    } else {
+        this.return = false;
+    }
 }
-
-
-
-//bloquefunc  : ABRE_BRACKET bloque2 afterDeclaracion bloque1 bloquefunc1 CIERRA_BRACKET;
 
 Armstrong.prototype.exitImprimir = function(ctx) {
     if (ctx.imprimir1().LETRERO() != null) {
@@ -458,5 +462,17 @@ Armstrong.prototype.exitImprimir = function(ctx) {
     }
 }
 
+Armstrong.prototype.exitFunc = function(ctx) {
+    //checar borrar //reset locales y temporales
+    this.Quads.push(new quad("ENDPROC", null, null, null));
+    this.actualCtx = 'global';
+
+}
+
+Armstrong.prototype.exitProgram = function(ctx) {
+    this.Quads.push(new quad("END", null, null, null));
+    let MV = new MaquinaVirtual(this.tablaFunc, this.Quads, this.Memoria);
+    MV.start();
+}
 
 exports.Armstrong = Armstrong;

@@ -3,14 +3,14 @@ class echo {
 
 
     //global,local,temporal,constante
-
+//CADA VEZ QUE SE ENTRA A UNA FUCNION SE HAGA INSTANCIA DE MEMORIA LOCAL Y TEMPORTAL Y METER A PILA PRA MANEJAR RECURSIVIDAD
     constructor() {
         this.bases = [];
         this.constantes = [];
         this.globales = [];
         this.locales = [];
         this.temporales = [];
-        this.funcs = [[[]]];
+        this.funcs = [[[]]]; //funcs[nombreFunc][type]['local' | 'temporal] = []
 
 
         //MEMORIA
@@ -164,61 +164,17 @@ class echo {
         this.locales = [];
     }
 
-    setConstant(val, type){
-        this.constantes[type].push(val);
-        return this.bases['Constantes'][type]+this.constantes[type].length-1;
-    }
-
-    setGlobal(val,type){
-        this.globales[type].push(val);
-        return this.bases['Globales'][type]+this.globales[type].length-1;
-    }
-
-    setLocal(val,type){
-        this.locales[type].push(val);
-        return this.bases['Locales'][type]+this.locales[type].length-1;
-    }
-
-    setTemporal(val,type){
-        this.temporales[type].push(val);
-        return this.bases['Temporales'][type]+this.temporales[type].length-1;
-    }
-
-    getConstant(address){
-    let [type,context] = this.getVarType(address);
-        return this.constantes[type][address-this.bases[context][type]];
-
-    }
-
-    getGlobal(address){
-        let [type,context] = this.getVarType(address);
-            return this.globales[type][address-this.bases[context][type]];
-    
-    }
-
-    getLocal(address){
-        let [type,context] = this.getVarType(address);
-            return this.locales[type][address-this.bases[context][type]];
-    
-    }
-
-    getTemporal(address){
-        let [type,context] = this.getVarType(address);
-            return this.temporales[type][address-this.bases[context][type]];
-    
-    }
-
-    getValue(address){
+    getValue(address,nombreFunc){
         let [type,context] = this.getVarType(address);
         switch (context) {
             case 'Locales':
-                return this.locales[type][address-this.bases[context][type]];
+                return this.funcs[nombreFunc][type][address-this.bases[context][type]];
                 break;
             case 'Globales':
                 return this.globales[type][address-this.bases[context][type]];
                 break;
             case 'Temporales':
-                return this.temporales[type][address-this.bases[context][type]];
+                return this.funcs[nombreFunc][type][address-this.bases[context][type]];
                 break;
             case 'Constantes':
                 return this.constantes[type][address-this.bases[context][type]];
@@ -229,15 +185,24 @@ class echo {
         }
     }
 
-    setValue(type,context,value){
-        this.memoria[context][type].push(value);
+    setValue(type,context,value,nombreFunc){
+        if (!nombreFunc) {
+            this.memoria[context][type].push(value);
         return this.bases[context][type]+this.memoria[context][type].length-1;
+        }
+        this.funcs[nombreFunc][context][type].push(value);
+        return this.bases[context][type]+this.funcs[nombreFunc][context][type].length-1;
     }
 
 
-    saveInAddress(val, address){
+    saveInAddress(val, address,nombreFunc){
         let [type,context] = this.getVarType(address);
+        if (!nombreFunc) {
         this.memoria[context][type][address-this.bases[context][type]] = val;
+        }else{
+            this.funcs[nombreFunc][context][type][address-this.bases[context][type]] = val;
+        }
+
     }
 
 

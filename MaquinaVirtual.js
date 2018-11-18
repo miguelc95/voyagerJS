@@ -5,7 +5,7 @@ var VoyagerListener = require('./VoyagerListener').VoyagerListener;
 const cubo = require('./cubo.json');
 const quad = require('./Tablas/Structs/quad').quad;
 
-
+// PARA SABER EN LA DIRECCION DONDE QUEREMOS GUARDAR LOS PARAMETROS SE ACCEDE A TABLAFUNC.FUNCIONS A LA QUE SE ENTRA Y TABLA DE PARAMETROS PARA ACCEDER A LAS DIRECCIONES NECESARIAS
 class MaquinaVirtual{
     
     constructor(tablaFunc,Quads,Memoria){
@@ -13,7 +13,9 @@ class MaquinaVirtual{
         this.Quads = Quads;
         this.Memoria = Memoria;
         this.globalVal = -1;
-        let index = 0;
+        this.index = 0;
+        this.colaParams = [];
+
     }
 
     start() {
@@ -79,7 +81,7 @@ class MaquinaVirtual{
                     break;
 
                 case 'PARAM':
-                    
+                    this.param(currQuad.left,currQuad.right,currQuad.loc);
                     break;
 
                 case 'GOSUB':
@@ -235,9 +237,19 @@ class MaquinaVirtual{
     }
 
     param(left,right,loc){
+        let leftVal = this.Memoria.getValue(left);
         let leftType = this.Memoria.getVarType(left)[0];
-        //sos
-        this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
+        
+        //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
+        this.colaParams.push({val:leftVal,tipo:leftType})
+    }
+
+    gosub(left,right,loc){
+        let leftVal = this.Memoria.getValue(left);
+        let leftType = this.Memoria.getVarType(left)[0];
+        
+        //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
+        this.colaParams.push({val:leftVal,tipo:leftType})
     }
 
     igual(left,right,loc){

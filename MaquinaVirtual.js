@@ -22,7 +22,7 @@ class MaquinaVirtual{
             console.log(currQuad.code);
             switch (currQuad.code) {
                 case '+':
-                    
+                    this.add(currQuad.left,currQuad.right,currQuad.loc)
                     break;
 
                 case '-':
@@ -99,7 +99,18 @@ class MaquinaVirtual{
         }
     }
 
-    add(left, right, loc){
+    add(left,right,loc){
+        let leftVal = this.Memoria.getValue(left);
+        let rightVal = this.Memoria.Value(right);
+        let leftType = this.Memoria.getVarType(left)[0];
+        let rightType = this.Memoria.getVarType(right)[0];
+        let newLoc = this.Memoria.getVarType(loc);
+
+        if (leftType == Int && rightType == Int) {
+            //SE DEBE GUARDAR EN LA DIRECCIÓN DE TEMPORAL POR EL VALOR DE LA SUM, HAY QUE CREAR OTRA FUNCIÓN DE SET QUE RECIBA LA DIRECCIÓN
+            this.Memoria.setValue(newLoc[0],newLoc[1],leftVal+rightVal)
+        }
+        
         
         
         // let (leftVal, leftType) = getValue(from: leftAddress)

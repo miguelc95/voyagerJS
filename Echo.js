@@ -177,6 +177,51 @@ class echo {
     
     }
 
+    getValue(address){
+        let [type,context] = this.getVarType(address);
+        switch (context) {
+            case 'Locales':
+                return this.locales[type][address-this.bases[context][type]];
+                break;
+            case 'Globales':
+                return this.globales[type][address-this.bases[context][type]];
+                break;
+            case 'Temporales':
+                return this.temporales[type][address-this.bases[context][type]];
+                break;
+            case 'Constantes':
+                return this.constantes[type][address-this.bases[context][type]];
+                break;
+            default:
+            console.log("No se encontro la variable en la memoria")
+                break;
+        }
+    }
+
+    setValue(type,context,value){
+        switch (context) {
+            case 'Locales':
+                this.locales[type].push(value);
+            return this.bases['Locales'][type]+this.locales[type].length-1;
+                break;
+            case 'Globales':
+                this.globales[type].push(value);
+                return this.bases['Globales'][type]+this.globales[type].length-1;               
+                 break;
+            case 'Temporales':
+                this.temporales[type].push(value);
+                return this.bases['Temporales'][type]+this.temporales[type].length-1;
+                break;
+            case 'Constantes':
+                this.constantes[type].push(value);
+                return this.bases['Constantes'][type]+this.constantes[type].length-1;                
+                break;
+            default:
+            console.log("No se pudo guardar la variable en memoria")
+                break;
+        }
+    }
+
 
 
 

@@ -1,4 +1,4 @@
-class Echo {
+class echo {
     bases = [];
     constantes = [];
     globales = [];
@@ -179,4 +179,4 @@ class Echo {
 
 }
 
-exports.Echo = Echo;
+exports.echo = echo;

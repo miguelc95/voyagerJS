@@ -370,10 +370,15 @@ Armstrong.prototype.enterVector_acceso = function(ctx) {
 }
 
 Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
-    let arr = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
+    let vardim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
         return v.nombre == ctx.ID().getText();
     });
-    this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], 0, arr.dim));
+    this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], 0, vardim.dim));
+    let aux1 = this.PilaO.pop();
+    let t = -1 ///generarle una nueva dir temporal
+    this.Quads.push(new quad("+", aux1, vardim.dir_virtual, t));
+    this.PilaO.push("(t)");
+    this.POper.pop();
 }
 
 exports.Armstrong = Armstrong;

@@ -32,7 +32,7 @@ var Armstrong = function() {
 };
 
 function fill(target, dir) {
-    console.log("TARGET",target,dir)
+    console.log("TARGET", target, dir)
     console.log(this.Quads)
     this.Quads[target].loc = dir;
 }
@@ -382,6 +382,7 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
     });
     this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], 0, vardim.dim));
     let aux1 = this.PilaO.pop();
+    let auxType = this.PTypes.pop();
     let t = -1 ///generarle una nueva dir temporal
     this.Quads.push(new quad("+", aux1, vardim.dir_virtual, t));
     this.PilaO.push("(t)");
@@ -438,16 +439,23 @@ Armstrong.prototype.exitAsignacion = function(ctx) {
 }
 
 Armstrong.prototype.exitProgram = function(ctx) {
- let MV = new MaquinaVirtual(this.tablaFunc,this.Quads,this.Memoria);
- MV.start();
+    let MV = new MaquinaVirtual(this.tablaFunc, this.Quads, this.Memoria);
+    MV.start();
 }
 
 
 
 //bloquefunc  : ABRE_BRACKET bloque2 afterDeclaracion bloque1 bloquefunc1 CIERRA_BRACKET;
 
-Armstrong.prototype.exitAsignacion = function(ctx) {
+Armstrong.prototype.exitImprimir = function(ctx) {
+    if (ctx.imprimir1().LETRERO() != null) {
+        let dirV = this.PilaO.pop();
+        this.PTypes.pop();
+        this.Quads.push(new quad("IMPRIMIR", dirV, null, null));
+    } else {
 
+        this.Quads.push(new quad("IMPRIMIR", null, null, ctx.imprimir1().LETRERO().getText()));
+    }
 }
 
 

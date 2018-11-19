@@ -114,3 +114,4 @@ class MemTemp{
     }
 
 }
+exports.MemTemp = MemTemp

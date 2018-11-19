@@ -4,6 +4,7 @@ const variable = require('./Tablas/Structs/variable').variable;
 var VoyagerListener = require('./VoyagerListener').VoyagerListener;
 const cubo = require('./cubo.json');
 const quad = require('./Tablas/Structs/quad').quad;
+const memTemp = require('./MemTemp').memTemp;
 
 // PARA SABER EN LA DIRECCION DONDE QUEREMOS GUARDAR LOS PARAMETROS SE ACCEDE A TABLAFUNC.FUNCIONS A LA QUE SE ENTRA Y TABLA DE PARAMETROS PARA ACCEDER A LAS DIRECCIONES NECESARIAS
 class MaquinaVirtual{

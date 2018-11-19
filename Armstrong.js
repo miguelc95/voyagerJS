@@ -377,12 +377,9 @@ Armstrong.prototype.exitLlamada = function(ctx) {
             let dirT = this.MemoriaTem.setValue(this.tablaFunc.dir[this.llamadaCtx].tipo, "Temporales", null);
             this.Quads.push(new quad("=", "regresa", null, dirT));
             this.PilaO.push(dirT);
-<<<<<<< HEAD
             this.PTypes.push(this.tablaFunc.dir[this.llamadaCtx.tipo]);
             this.return = false;
-=======
-            this.PTypes.push(this.tablaFunc.dir[this.llamadaCtx].tipo);
->>>>>>> 028ab6662725251703f3bde95ac362f8810ce5e0
+
         }
 
         parCount = 0;

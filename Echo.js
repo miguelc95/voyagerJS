@@ -21,48 +21,35 @@ class echo {
 
         this.memoria['Globales']['Int'] = [];
         this.memoria['Globales']['Float'] = [];
-        this.memoria['Globales']['String'] = [];
+        this.memoria['Globales']['Char'] = [];
         this.memoria['Globales']['Bool'] = [];
 
         this.memoria['Locales']['Int'] = [];
         this.memoria['Locales']['Float'] = [];
-        this.memoria['Locales']['String'] = [];
+        this.memoria['Locales']['Char'] = [];
         this.memoria['Locales']['Bool'] = [];
 
         this.memoria['Temporales']['Int'] = [];
         this.memoria['Temporales']['Float'] = [];
-        this.memoria['Temporales']['String'] = [];
+        this.memoria['Temporales']['Char'] = [];
         this.memoria['Temporales']['Bool'] = [];
 
         this.memoria['Constantes']['Int'] = [];
         this.memoria['Constantes']['Float'] = [];
-        this.memoria['Constantes']['String'] = [];
+        this.memoria['Constantes']['Char'] = [];
         this.memoria['Constantes']['Bool'] = [];
 
         //BASES
         this.bases['Globales'] = [];
-        this.bases['Locales'] = [];
-        this.bases['Temporales'] = [];
         this.bases['Constantes'] = [];
 
         this.bases['Globales']['Int'] = 0;
         this.bases['Globales']['Float'] = 2000;
-        this.bases['Globales']['String'] = 4000;
-        this.bases['Globales']['Bool'] = 6000;
-
-        this.bases['Locales']['Int'] = 8000
-        this.bases['Locales']['Float'] = 10000
-        this.bases['Locales']['String'] = 12000
-        this.bases['Locales']['Bool'] = 14000
-
-        this.bases['Temporales']['Int'] = 16000
-        this.bases['Temporales']['Float'] = 18000
-        this.bases['Temporales']['String'] = 200000
-        this.bases['Temporales']['Bool'] = 22000
+        this.bases['Globales']['Char'] = 4000; 
 
         this.bases['Constantes']['Int'] = 24000
         this.bases['Constantes']['Float'] = 26000
-        this.bases['Constantes']['String'] = 280000
+        this.bases['Constantes']['Char'] = 280000
         this.bases['Constantes']['Bool'] = 30000
     }
 
@@ -93,7 +80,7 @@ class echo {
                         return ['Float','Globales']
                         break;
                     case address < 6000:
-                        return ['String','Globales']
+                        return ['Char','Globales']
                         break;
                     case address >= 6000:
                         return ['Bool','Globales']
@@ -110,7 +97,7 @@ class echo {
                         return ['Float','Locales']
                         break;
                     case address < 12000:
-                        return ['String','Locales']
+                        return ['Char','Locales']
                         break;
                     case address >= 14000:
                         return ['Bool','Locales']
@@ -127,7 +114,7 @@ class echo {
                         return ['Float','Temporales']
                         break;
                     case address < 20000:
-                        return ['String','Temporales']
+                        return ['Char','Temporales']
                         break;
                     case address >= 22000:
                         return ['Bool','Temporales']
@@ -144,7 +131,7 @@ class echo {
                         return ['Float','Constantes']
                         break;
                     case address < 30000:
-                        return ['String','Constantes']
+                        return ['Char','Constantes']
                         break;
                     case address >= 32000:
                         return ['Bool','Constantes']

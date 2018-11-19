@@ -376,6 +376,7 @@ Armstrong.prototype.exitLlamada = function(ctx) {
             this.Quads.push(new quad("=", "regresa", null, dirT));
             this.PilaO.push(dirT);
             this.PTypes.push(this.tablaFunc.dir[this.llamadaCtx.tipo]);
+            this.return = false;
         }
 
         parCount = 0;

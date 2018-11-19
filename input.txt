@@ -17,7 +17,7 @@ programa {
  
    vacio main() {
        var entero var1; 
-    var1 = bye();
+        var1 = bye();
         hi();
    }
    

@@ -35,8 +35,8 @@ var Armstrong = function() {
 };
 
 function fill(target, dir) {
-    console.log("TARGET", target, dir)
-    console.log(this.Quads)
+    console.log("TARGET", target, dir);
+    console.log("quads", this.Quads);
     this.Quads[target].loc = dir;
 }
 
@@ -199,7 +199,7 @@ Armstrong.prototype.exitTermino = function(ctx) {
         let left_operand = this.PilaO.pop();
         let left_type = this.PTypes.pop();
         let operator = this.POper.pop();
-        console.log(right_type);
+
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
             let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
@@ -211,7 +211,7 @@ Armstrong.prototype.exitTermino = function(ctx) {
         } else {
             console.log("ERROR type mismatch");
         }
-        console.log("ADIOS", result_type)
+
     }
 }
 
@@ -233,7 +233,7 @@ Armstrong.prototype.exitExp = function(ctx) {
         } else {
             console.log("ERROR type mismatch");
         }
-        console.log("ADIOS", result_type)
+
     }
 }
 
@@ -257,7 +257,7 @@ Armstrong.prototype.exitExpbool = function(ctx) {
         } else {
             console.log("ERROR type mismatch");
         }
-        console.log("ADIOS", result_type)
+
     }
 }
 
@@ -292,7 +292,6 @@ Armstrong.prototype.enterExpresion1 = function(ctx) {
     if (operador) {
         operador = operador.getText();
         this.POper.push(operador);
-        console.log(operador);
     }
 
 }
@@ -443,7 +442,7 @@ Armstrong.prototype.enterIdvector = function(ctx) {
         } else {
             varObj.dir_virtual = this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
         }
-        console.log(this.tablaFunc)
+        //console.log(this.tablaFunc)
         this.tablaFunc.dir[this.actualCtx].arrVariable.push(varObj);
     }
 }
@@ -468,7 +467,7 @@ Armstrong.prototype.exitAsignacion = function(ctx) {
     let dest = this.PilaO.pop();
     if (result_type != "error") {
         this.Quads.push(new quad("=", val, null, dest));
-        console.log(this.Quads[0])
+        //console.log(this.Quads[0])
     } else {
         console.log("Error de tipos en la asignación");
 
@@ -488,7 +487,8 @@ Armstrong.prototype.exitBloquefunc1 = function(ctx) {
 }
 
 Armstrong.prototype.exitImprimir = function(ctx) {
-    if (ctx.imprimir1().LETRERO() != null) {
+
+    if (ctx.imprimir1().LETRERO() == null) {
         let dirV = this.PilaO.pop();
         this.PTypes.pop();
         this.Quads.push(new quad("IMPRIMIR", dirV, null, null));

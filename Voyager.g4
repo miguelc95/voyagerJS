@@ -167,7 +167,7 @@ IMPRIMIR            : I M P R I M I R;
 
 SI                  : S I;
 
-MAIN                : M A I N;
+//MAIN                : M A I N;
 
 SINO                : S I N O;
 

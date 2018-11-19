@@ -323,7 +323,7 @@ Armstrong.prototype.enterCondicion1 = function(ctx) {
     this.Quads.push(new quad("GOTO", null, null, null));
     falso = this.PJumps.pop();
     this.PJumps.push(this.Quads.length - 1);
-    console.log("QUADS",this.Quads)
+    console.log("QUADS", this.Quads)
 
     fill(falso, this.Quads.length);
 }
@@ -336,7 +336,7 @@ Armstrong.prototype.exitCiclo = function(ctx) {
     end = this.PJumps.pop();
     ret = this.PJumps.pop();
     this.Quads.push(new quad("GOTO", ret, null, null));
-    console.log("QUADS",this.Quads)
+    console.log("QUADS", this.Quads)
 
     fill(end, this.Quads.length);
 
@@ -510,6 +510,10 @@ Armstrong.prototype.exitFunc = function(ctx) {
     this.Quads.push(new quad("ENDPROC", null, null, null));
     this.actualCtx = 'global';
 
+}
+
+Armstrong.prototype.enterProgram = function(ctx) {
+    this.Quads.push(new quad("GOTO", null, null, null));
 }
 
 Armstrong.prototype.exitProgram = function(ctx) {

@@ -19,6 +19,7 @@ class MemTemp {
 
 
         //BASES
+        this.bases = [];
         this.bases['Locales'] = [];
         this.bases['Temporales'] = [];
 
@@ -106,15 +107,15 @@ class MemTemp {
     }
 
     setValue(type, context, value) {
-        this.memoria[context][type].push(value);
-        return this.bases[context][type] + this.memoria[context][type].length - 1;
+        this.memTemp[context][type].push(value);
+        return this.bases[context][type] + this.memTemp[context][type].length - 1;
 
     }
 
 
     saveInAddress(val, address) {
         let [type, context] = this.getVarType(address);
-        this.memoria[context][type][address - this.bases[context][type]] = val;
+        this.memTemp[context][type][address - this.bases[context][type]] = val;
         this.funcs[nombreFunc][context][type][address - this.bases[context][type]] = val;
     }
 

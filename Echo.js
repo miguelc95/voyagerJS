@@ -14,7 +14,7 @@ class echo {
             ]
         ]; //funcs[nombreFunc][type]['local' | 'temporal] = []
 
-
+        this.memoria = [];
         //MEMORIA
         this.memoria['Globales'] = [];
         this.memoria['Constantes'] = [];

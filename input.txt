@@ -3,9 +3,6 @@ programa {
 	imprimir("hivrvrevr_ecerfer?r/fvv[]er"); 
     }
 
-    bool hi () {
-        regresa verdadero;
-    }
 
     entero bye () {
     var bool a;

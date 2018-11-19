@@ -7,7 +7,7 @@ const quad = require('./Tablas/Structs/quad').quad;
 const machine = require('./MaquinaVirtual').MaquinaVirtual;
 
 const echo = require('./echo').echo;
-const memTemp = require('./MemTemp').memTemp;
+const memTemp = require('./MemTemp').MemTemp;
 
 var Armstrong = function() {
     this.tablaFunc = new dirFunc();
@@ -27,7 +27,7 @@ var Armstrong = function() {
     //temporales
     this.parCount = 0;
     this.llamadaCtx = '';
-    this.return = falso;
+    this.return = false;
     this.returnType = '';
 
     VoyagerListener.call(this); // inherit default listener
@@ -90,7 +90,7 @@ Armstrong.prototype.enterOperando = function(ctx) {
         } else {
             // insertar cte dirConst, asignandole una nueva dir
             dirV = this.Memoria.setValue("entero", "Constantes", cteE);
-            self.dirConst[cteE] = dirV;
+            this.dirConst[cteE] = dirV;
         }
         this.PilaO.push(dirV)
         this.PTypes.push('entero');
@@ -101,10 +101,10 @@ Armstrong.prototype.enterOperando = function(ctx) {
         } else {
             // insertar cte dirConst, asignandole una nueva dir
             dirV = this.Memoria.setValue("flotante", "Constantes", cteF);
-            self.dirConst[cteF] = dirV;
+            this.dirConst[cteF] = dirV;
         }
         this.PilaO.push(dirV);
-        self.PTypes.push('flotante');
+        this.PTypes.push('flotante');
     } else if (ctx.CTE_C() != null) {
         let cteC = ctx.CTE_C().getText();
         if (this.dirConst[cteC] != undefined) {
@@ -112,7 +112,7 @@ Armstrong.prototype.enterOperando = function(ctx) {
         } else {
             // insertar cte dirConst, asignandole una nueva dir
             dirV = this.Memoria.setValue("char", "Constantes", cteC);
-            self.dirConst[cteC] = dirV;
+            this.dirConst[cteC] = dirV;
         }
         this.PilaO.push(dirV);
         this.PTypes.push('char');
@@ -122,7 +122,7 @@ Armstrong.prototype.enterOperando = function(ctx) {
         } else {
             // insertar cte dirConst, asignandole una nueva dir
             dirV = this.Memoria.setValue("bool", "Constantes", "verdadero");
-            self.dirConst['verdadero'] = dirV;
+            this.dirConst['verdadero'] = dirV;
         }
         this.PilaO.push(dirV);
         this.PTypes.push('bool');
@@ -133,7 +133,7 @@ Armstrong.prototype.enterOperando = function(ctx) {
         } else {
             // insertar cte dirConst, asignandole una nueva dir
             dirV = this.Memoria.setValue("bool", "Constantes", "falso");
-            self.dirConst['falso'] = dirV;
+            this.dirConst['falso'] = dirV;
         }
         this.PilaO.push(dirV);
         this.PTypes.push('bool');
@@ -507,6 +507,8 @@ Armstrong.prototype.exitFunc = function(ctx) {
 
 Armstrong.prototype.exitProgram = function(ctx) {
     this.Quads.push(new quad("END", null, null, null));
+    console.log(this.Quads);
+
     let MV = new MaquinaVirtual(this.tablaFunc, this.Quads, this.Memoria);
     MV.start();
 }

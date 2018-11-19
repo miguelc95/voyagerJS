@@ -19,12 +19,12 @@ var Armstrong = function() {
     this.POper = [];
     this.Quads = [];
     this.dirConst = [];
+    this.dirGlob = [];
     this.actualCtx = '';
     this.Memoria = new echo();
     this.MemoriaTem = new memTemp();
 
     //temporales
-    this.dir = -1;
     this.parCount = 0;
     this.llamadaCtx = '';
     this.return = falso;
@@ -76,59 +76,66 @@ Armstrong.prototype.enterFunc = function(ctx) {
 
 Armstrong.prototype.enterAfterDeclaracion = function(ctx) {
 
-
     this.tablaFunc.dir[this.actualCtx].numVars = this.tablaFunc.dir[this.actualCtx].arrVariable.length;
     this.tablaFunc.dir[this.actualCtx].inicio = this.Quads.length;
 }
 
 Armstrong.prototype.enterOperando = function(ctx) {
     let cteB = ctx.getText();
+    let dirV = -1;
     if (ctx.CTE_E() != null) {
         let cteE = parseInt(ctx.CTE_E().getText())
         if (this.dirConst[cteE] != undefined) {
-            this.dir = this.dirConst[cteE]
+            dirV = this.dirConst[cteE]
         } else {
             // insertar cte dirConst, asignandole una nueva dir
-            this.Memoria
-                // dir = nueva dir
-                // self.dirConst[cteN] = dir
+            dirV = this.Memoria.setValue("entero", "Constantes", cteE);
+            self.dirConst[cteE] = dirV;
         }
-        this.PilaO.push(this.dir)
+        this.PilaO.push(dirV)
         this.PTypes.push('entero');
     } else if (ctx.CTE_F() != null) {
         let cteF = float(ctx.CTE_F().getText())
         if (this.dirConst[cteF] != undefined) {
-            this.dir = this.dirConst[cteF];
+            dirV = this.dirConst[cteF];
         } else {
             // insertar cte dirConst, asignandole una nueva dir
-            // dir = nueva dir
-            // self.dirConst[cteN] = dir
-
-            this.PilaO.push(this.dir);
-            self.PTypes.push('flotante');
+            dirV = this.Memoria.setValue("flotante", "Constantes", cteF);
+            self.dirConst[cteF] = dirV;
         }
+        this.PilaO.push(dirV);
+        self.PTypes.push('flotante');
     } else if (ctx.CTE_C() != null) {
         let cteC = ctx.CTE_C().getText();
         if (this.dirConst[cteC] != undefined) {
-            this.dir = this.dirConst[cteC];
+            dirV = this.dirConst[cteC];
         } else {
             // insertar cte dirConst, asignandole una nueva dir
-            // dir = nueva dir
-            // self.dirConst[cteN] = dir
-
-            this.PilaO.push(this.dir);
-            this.PTypes.push('char');
+            dirV = this.Memoria.setValue("char", "Constantes", cteC);
+            self.dirConst[cteC] = dirV;
         }
+        this.PilaO.push(dirV);
+        this.PTypes.push('char');
     } else if (cteB == 'verdadero') {
-        // tener ya definidas dir para true y false
-        //Meter dirección de verdadero a dir = 
-        this.dir = this.dirConst['verdadero'];
-        this.PilaO.push(this.dir);
+        if (this.dirConst['verdadero'] != undefined) {
+            dirV = this.dirConst['verdadero'];
+        } else {
+            // insertar cte dirConst, asignandole una nueva dir
+            dirV = this.Memoria.setValue("bool", "Constantes", "verdadero");
+            self.dirConst['verdadero'] = dirV;
+        }
+        this.PilaO.push(dirV);
         this.PTypes.push('bool');
 
     } else if (cteB == 'falso') {
-        this.dir = this.dirConst['falso'];
-        this.PilaO.push(this.dir);
+        if (this.dirConst['falso'] != undefined) {
+            dirV = this.dirConst['falso'];
+        } else {
+            // insertar cte dirConst, asignandole una nueva dir
+            dirV = this.Memoria.setValue("bool", "Constantes", "falso");
+            self.dirConst['falso'] = dirV;
+        }
+        this.PilaO.push(dirV);
         this.PTypes.push('bool');
 
     } else if (ctx.ID() != null) {
@@ -137,9 +144,12 @@ Armstrong.prototype.enterOperando = function(ctx) {
             return v.nombre == id;
         });
         if (v != null) {
-            this.PilaO.push(v.dir_virtual)
-            this.PTypes.push(v.tipo)
-                //elif checar con var globales
+            this.PilaO.push(v.dir_virtual);
+            this.PTypes.push(v.tipo);
+        } else if (this.dirGlob[id] != undefined) {
+            let [type, context] = this.getVarType(this.dirGlob[id]);
+            this.PilaO.push(this.dirGlob[id]);
+            this.PTypes.push(type);
         } else {
             console.log('Error la variable no esta declarada', ctx.ID().getText());
 
@@ -169,13 +179,12 @@ Armstrong.prototype.exitFactor = function(ctx) {
         let operator = this.POper.pop();
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
-            let result = 0; //result <- AVAIL.next()
+            let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
             console.log(this.Quads)
             this.PilaO.push(result);
             this.PTypes.push(result_type);
-            //If any operand were a temporal space, return it to avail
         } else {
             console.log("ERROR type mismatch");
         }
@@ -193,7 +202,7 @@ Armstrong.prototype.exitTermino = function(ctx) {
         console.log(right_type);
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
-            let result = 0; //result <- AVAIL.next()
+            let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
             this.PilaO.push(result);
@@ -215,7 +224,7 @@ Armstrong.prototype.exitExp = function(ctx) {
         let operator = this.POper.pop();
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
-            let result = 0; //result <- AVAIL.next()
+            let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
             this.PilaO.push(result);
@@ -239,7 +248,7 @@ Armstrong.prototype.exitExpbool = function(ctx) {
 
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
-            let result = 0; //result <- AVAIL.next()
+            let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
             this.PilaO.push(result);
@@ -357,7 +366,7 @@ Armstrong.prototype.exitLlamada = function(ctx) {
     if (parCount == this.tablaFunc.dir[this.llamadaCtx].parameterTable.length) {
         this.Quads.push(new quad("GOSUB", this.llamadaCtx, this.Quads.length, this.tablaFunc.dir[this.llamadaCtx].inicio));
         if (this.return) {
-            let dirT = -1; //genera temporal
+            let dirT = this.MemoriaTem.setValue(this.tablaFunc.dir[this.llamadaCtx].tipo, "Temporales", null);
             this.Quads.push(new quad("=", "regresa", null, dirT));
             this.PilaO.push(dirT);
             this.PTypes.push(this.tablaFunc.dir[this.llamadaCtx.tipo]);
@@ -390,7 +399,7 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
     this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], null, vardim.dim));
     let aux1 = this.PilaO.pop();
     let auxType = this.PTypes.pop();
-    let t = -1 ///generarle una nueva dir temporal
+    let t = this.MemoriaTem.setValue("entero", "Temporales", null);
     this.Quads.push(new quad("+", aux1, vardim.dir_virtual, t));
     this.PilaO.push("(t)");
     this.PTypes.push(vardim.tipo);
@@ -401,9 +410,24 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
 idvector               : ID | vector;*/
 
 Armstrong.prototype.enterVector = function(ctx) {
+    //checar si ya está declarada
     let variable = new variable(ctx.ID().getText(), ctx.parentCtx.parentCtx.tipo().getText());
     variable.dim = parseInt(ctx.CTE_E());
-    variable.dir_virtual = -1; //generar nueva dirección 
+    let dirVB;
+    if (this.actualCtx == '') {
+        dirVB = this.Memoria.setValue(ctx.parentCtx.tipo().getText(), "Globales", null);
+        this.dirGlob[ctx.ID().getText()] = dirVB;
+        for (var i = 1; i < variable.dim; i++) {
+            this.Memoria.setValue(ctx.parentCtx.tipo().getText(), "Globales", null);
+        }
+    } else {
+        dirVB = this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
+        for (var i = 1; i < variable.dim; i++) {
+            this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
+        }
+
+    }
+    variable.dir_virtual = dirVB; //generar nueva dirección 
     //+ espacios para todo su tamaño
     //calcula la base para la sig variable dirBasae = dirbase+parseInt(ctx.CTE_E())
     this.tablaFunc.dir[this.actualCtx].arrVariable.push(variable);
@@ -411,8 +435,14 @@ Armstrong.prototype.enterVector = function(ctx) {
 
 Armstrong.prototype.enterIdvector = function(ctx) {
     if (ctx.ID() != null) {
+        //checar si ya está declarada
         let varObj = new variable(ctx.ID().getText(), ctx.parentCtx.tipo().getText());
-        varObj.dir_virtual = -1; //generar nueva dirección 
+        if (this.actualCtx == '') {
+            varObj.dir_virtual = this.Memoria.setValue(ctx.parentCtx.tipo().getText(), "Globales", null);
+            this.dirGlob[ctx.ID().getText()] = varObj.dir_virtual;
+        } else {
+            varObj.dir_virtual = this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
+        }
         console.log(this.tablaFunc)
         this.tablaFunc.dir[this.actualCtx].arrVariable.push(varObj);
     }

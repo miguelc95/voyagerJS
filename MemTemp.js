@@ -6,15 +6,15 @@ class MemTemp {
         this.memTemp['Temporales'] = [];
 
 
-        this.memTemp['Locales']['Int'] = [];
-        this.memTemp['Locales']['Float'] = [];
-        this.memTemp['Locales']['Char'] = [];
-        this.memTemp['Locales']['Bool'] = [];
+        this.memTemp['Locales']['entero'] = [];
+        this.memTemp['Locales']['flotante'] = [];
+        this.memTemp['Locales']['char'] = [];
+        this.memTemp['Locales']['bool'] = [];
 
-        this.memTemp['Temporales']['Int'] = [];
-        this.memTemp['Temporales']['Float'] = [];
-        this.memTemp['Temporales']['Char'] = [];
-        this.memTemp['Temporales']['Bool'] = [];
+        this.memTemp['Temporales']['entero'] = [];
+        this.memTemp['Temporales']['flotante'] = [];
+        this.memTemp['Temporales']['char'] = [];
+        this.memTemp['Temporales']['bool'] = [];
 
 
 
@@ -22,15 +22,15 @@ class MemTemp {
         this.bases['Locales'] = [];
         this.bases['Temporales'] = [];
 
-        this.bases['Locales']['Int'] = 16000
-        this.bases['Locales']['Float'] = 18000
-        this.bases['Locales']['Char'] = 20000
-        this.bases['Locales']['Bool'] = 22000
+        this.bases['Locales']['entero'] = 16000
+        this.bases['Locales']['flotante'] = 18000
+        this.bases['Locales']['char'] = 20000
+        this.bases['Locales']['bool'] = 22000
 
-        this.bases['Temporales']['Int'] = 24000
-        this.bases['Temporales']['Float'] = 26000
-        this.bases['Temporales']['Char'] = 280000
-        this.bases['Temporales']['Bool'] = 30000
+        this.bases['Temporales']['entero'] = 24000
+        this.bases['Temporales']['flotante'] = 26000
+        this.bases['Temporales']['char'] = 280000
+        this.bases['Temporales']['bool'] = 30000
 
     }
 
@@ -52,16 +52,16 @@ class MemTemp {
             case address >= 16000 && address < 22000:
                 switch (true) {
                     case address < 16000:
-                        return ['Int', 'Locales']
+                        return ['entero', 'Locales']
                         break;
                     case address < 18000:
-                        return ['Float', 'Locales']
+                        return ['flotante', 'Locales']
                         break;
                     case address < 20000:
-                        return ['Char', 'Locales']
+                        return ['char', 'Locales']
                         break;
                     case address >= 22000:
-                        return ['Bool', 'Locales']
+                        return ['bool', 'Locales']
                         break;
                     default:
                         break;
@@ -69,16 +69,16 @@ class MemTemp {
             case address >= 24000 && address < 30000:
                 switch (true) {
                     case address < 24000:
-                        return ['Int', 'Temporales']
+                        return ['entero', 'Temporales']
                         break;
                     case address < 26000:
-                        return ['Float', 'Temporales']
+                        return ['flotante', 'Temporales']
                         break;
                     case address < 28000:
-                        return ['Char', 'Temporales']
+                        return ['char', 'Temporales']
                         break;
                     case address >= 30000:
-                        return ['Bool', 'Temporales']
+                        return ['bool', 'Temporales']
                         break;
                     default:
                         break;

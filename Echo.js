@@ -24,24 +24,24 @@ class echo {
         this.memoria['Globales']['Char'] = [];
         this.memoria['Globales']['Bool'] = [];
 
-        this.memoria['Constantes']['Int'] = [];
-        this.memoria['Constantes']['Float'] = [];
+        this.memoria['Constantes']['entero'] = [];
+        this.memoria['Constantes']['flotante'] = [];
         this.memoria['Constantes']['Char'] = [];
-        this.memoria['Constantes']['Bool'] = [];
+        this.memoria['Constantes']['bool'] = [];
 
         //BASES
         this.bases['Globales'] = [];
         this.bases['Constantes'] = [];
 
-        this.bases['Globales']['Int'] = 0;
-        this.bases['Globales']['Float'] = 2000;
-        this.bases['Globales']['Char'] = 4000;
-        this.bases['Globales']['Bool'] = 6000;
+        this.bases['Globales']['entero'] = 0;
+        this.bases['Globales']['flotante'] = 2000;
+        this.bases['Globales']['char'] = 4000;
+        this.bases['Globales']['bool'] = 6000;
 
-        this.bases['Constantes']['Int'] = 8000
-        this.bases['Constantes']['Float'] = 10000
-        this.bases['Constantes']['Char'] = 120000
-        this.bases['Constantes']['Bool'] = 14000
+        this.bases['Constantes']['entero'] = 8000
+        this.bases['Constantes']['flotante'] = 10000
+        this.bases['Constantes']['char'] = 120000
+        this.bases['Constantes']['bool'] = 14000
     }
 
     getContext(address) {
@@ -61,16 +61,16 @@ class echo {
             case address <= 6000:
                 switch (true) {
                     case address < 2000:
-                        return ['Int', 'Globales']
+                        return ['entero', 'Globales']
                         break;
                     case address < 4000:
-                        return ['Float', 'Globales']
+                        return ['flotante', 'Globales']
                         break;
                     case address < 6000:
-                        return ['Char', 'Globales']
+                        return ['char', 'Globales']
                         break;
                     case address >= 6000:
-                        return ['Bool', 'Globales']
+                        return ['bool', 'Globales']
                         break;
                     default:
                         break;
@@ -78,16 +78,16 @@ class echo {
             case address >= 8000:
                 switch (true) {
                     case address < 8000:
-                        return ['Int', 'Constantes']
+                        return ['entero', 'Constantes']
                         break;
                     case address < 10000:
-                        return ['Float', 'Constantes']
+                        return ['flotante', 'Constantes']
                         break;
                     case address < 12000:
-                        return ['Char', 'Constantes']
+                        return ['char', 'Constantes']
                         break;
                     case address >= 14000:
-                        return ['Bool', 'Constantes']
+                        return ['bool', 'Constantes']
                         break;
                     default:
                         break;

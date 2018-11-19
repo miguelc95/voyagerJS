@@ -1,6 +1,6 @@
-class MemTemp{
+class MemTemp {
 
-    constructor(){
+    constructor() {
         this.memTemp = [];
         this.memTemp['Locales'] = [];
         this.memTemp['Temporales'] = [];
@@ -18,55 +18,67 @@ class MemTemp{
 
 
 
-               //BASES
-               this.bases['Locales'] = [];
-               this.bases['Temporales'] = [];
+        //BASES
+        this.bases['Locales'] = [];
+        this.bases['Temporales'] = [];
 
-               this.bases['Locales']['Int'] = 8000
-               this.bases['Locales']['Float'] = 10000
-               this.bases['Locales']['Char'] = 12000
-               this.bases['Locales']['Bool'] = 14000
-       
-               this.bases['Temporales']['Int'] = 16000
-               this.bases['Temporales']['Float'] = 18000
-               this.bases['Temporales']['Char'] = 200000
-               this.bases['Temporales']['Bool'] = 22000
+        this.bases['Locales']['Int'] = 16000
+        this.bases['Locales']['Float'] = 18000
+        this.bases['Locales']['Char'] = 20000
+        this.bases['Locales']['Bool'] = 22000
+
+        this.bases['Temporales']['Int'] = 24000
+        this.bases['Temporales']['Float'] = 26000
+        this.bases['Temporales']['Char'] = 280000
+        this.bases['Temporales']['Bool'] = 30000
 
     }
 
-
-    getVarType(address){
+    getContext(address) {
         switch (true) {
-            case address >= 8000 && address < 16000:
+            case address <= 22000:
+                return 'Locales';
+            case address >= 24000:
+                return 'Temporales';
+            default:
+                console.log("No se pudo determinar el tipo")
+                break;
+        }
+    }
+
+
+    getVarType(address) {
+        switch (true) {
+            case address >= 16000 && address < 22000:
                 switch (true) {
-                    case address < 8000:
-                        return ['Int','Locales']
+                    case address < 16000:
+                        return ['Int', 'Locales']
                         break;
-                    case address < 10000:
-                        return ['Float','Locales']
+                    case address < 18000:
+                        return ['Float', 'Locales']
                         break;
-                    case address < 12000:
-                        return ['Char','Locales']
+                    case address < 20000:
+                        return ['Char', 'Locales']
                         break;
-                    case address >= 14000:
-                        return ['Bool','Locales']
+                    case address >= 22000:
+                        return ['Bool', 'Locales']
                         break;
                     default:
                         break;
                 }
-            case address >= 18000 && address < 24000:
+            case address >= 24000 && address < 30000:
                 switch (true) {
-                    case address < 16000:
-                        return ['Int','Temporales']
+                    case address < 24000:
+                        return ['Int', 'Temporales']
                         break;
-                    case address < 18000:
-                        return ['Float','Temporales']
+                    case address < 26000:
+                        return ['Float', 'Temporales']
                         break;
-                    case address < 20000:
-                        return ['Char','Temporales']
+                    case address < 28000:
+                        return ['Char', 'Temporales']
                         break;
-                    case address >= 22000:
-                        return ['Bool','Temporales']
+                    case address >= 30000:
+                        return ['Bool', 'Temporales']
                         break;
                     default:
                         break;
@@ -78,39 +90,32 @@ class MemTemp{
 
     }
 
-    getValue(address,nombreFunc){
-        let [type,context] = this.getVarType(address);
+    getValue(address) {
+        let [type, context] = this.getVarType(address);
         switch (context) {
             case 'Locales':
-                return this.funcs[nombreFunc][type][address-this.bases[context][type]];
+                return this.funcs[nombreFunc][type][address - this.bases[context][type]];
                 break;
             case 'Temporales':
-                return this.funcs[nombreFunc][type][address-this.bases[context][type]];
+                return this.funcs[nombreFunc][type][address - this.bases[context][type]];
                 break;
             default:
-            console.log("No se encontro la variable en la memoria")
+                console.log("No se encontro la variable en la memoria")
                 break;
         }
     }
 
-    setValue(type,context,value,nombreFunc){
-        if (!nombreFunc) {
-            this.memoria[context][type].push(value);
-        return this.bases[context][type]+this.memoria[context][type].length-1;
-        }
-        this.funcs[nombreFunc][context][type].push(value);
-        return this.bases[context][type]+this.funcs[nombreFunc][context][type].length-1;
+    setValue(type, context, value) {
+        this.memoria[context][type].push(value);
+        return this.bases[context][type] + this.memoria[context][type].length - 1;
+
     }
 
 
-    saveInAddress(val, address,nombreFunc){
-        let [type,context] = this.getVarType(address);
-        if (!nombreFunc) {
-        this.memoria[context][type][address-this.bases[context][type]] = val;
-        }else{
-            this.funcs[nombreFunc][context][type][address-this.bases[context][type]] = val;
-        }
-
+    saveInAddress(val, address) {
+        let [type, context] = this.getVarType(address);
+        this.memoria[context][type][address - this.bases[context][type]] = val;
+        this.funcs[nombreFunc][context][type][address - this.bases[context][type]] = val;
     }
 
 }

@@ -7,7 +7,7 @@ const quad = require('./Tablas/Structs/quad').quad;
 const machine = require('./MaquinaVirtual').MaquinaVirtual;
 
 const echo = require('./echo').echo;
-
+const memTemp = require('./MemTemp').memTemp;
 
 var Armstrong = function() {
     this.tablaFunc = new dirFunc();
@@ -21,6 +21,7 @@ var Armstrong = function() {
     this.dirConst = [];
     this.actualCtx = '';
     this.Memoria = new echo();
+    this.MemoriaTem = new memTemp();
 
     //temporales
     this.dir = -1;
@@ -59,6 +60,7 @@ Armstrong.prototype.enterFunc = function(ctx) {
         ctx.parametros().ID().forEach((nombre, i) => {
             console.log(nombre, i);
             let varObj = new variable(nombre.getText(), ctx.parametros().tipo()[i].getText());
+            //get dir de variable y checar si también en la tabla de param se requiere todo el obj
             funcObj.addVariable(varObj);
             funcObj.addParamType(ctx.parametros().tipo()[i].getText());
 
@@ -86,8 +88,9 @@ Armstrong.prototype.enterOperando = function(ctx) {
             this.dir = this.dirConst[cteE]
         } else {
             // insertar cte dirConst, asignandole una nueva dir
-            // dir = nueva dir
-            // self.dirConst[cteN] = dir
+            this.Memoria
+                // dir = nueva dir
+                // self.dirConst[cteN] = dir
         }
         this.PilaO.push(this.dir)
         this.PTypes.push('entero');
@@ -355,6 +358,8 @@ Armstrong.prototype.exitLlamada = function(ctx) {
         if (this.return) {
             let dirT = -1; //genera temporal
             this.Quads.push(new quad("=", "regresa", null, dirT));
+            this.PilaO.push(dirT);
+            this.PTypes.push(this.tablaFunc.dir[this.llamadaCtx.tipo]);
         }
 
         parCount = 0;

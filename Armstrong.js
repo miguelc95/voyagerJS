@@ -52,6 +52,7 @@ Armstrong.prototype.enterFunc = function(ctx) {
         console.log('Error ya existe una función con ese nombre')
     } else {
         if (ctx.ID().getText() == "main") {
+            //console.log("QUADS",this.Quads)
             fill(0, this.Quads.length);
         }
 
@@ -312,6 +313,8 @@ Armstrong.prototype.enterLee_condicion = function(ctx) {
 
 Armstrong.prototype.exitCondicion = function(ctx) {
     end = this.PJumps.pop();
+    //console.log("QUADS",this.Quads)
+
     fill(end, this.Quads.length);
 
 }
@@ -320,6 +323,8 @@ Armstrong.prototype.enterCondicion1 = function(ctx) {
     this.Quads.push(new quad("GOTO", null, null, null));
     falso = this.PJumps.pop();
     this.PJumps.push(this.Quads.length - 1);
+    console.log("QUADS",this.Quads)
+
     fill(falso, this.Quads.length);
 }
 
@@ -331,6 +336,8 @@ Armstrong.prototype.exitCiclo = function(ctx) {
     end = this.PJumps.pop();
     ret = this.PJumps.pop();
     this.Quads.push(new quad("GOTO", ret, null, null));
+    console.log("QUADS",this.Quads)
+
     fill(end, this.Quads.length);
 
 }

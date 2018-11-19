@@ -29,15 +29,20 @@ var Armstrong = function() {
     this.llamadaCtx = '';
     this.return = false;
     this.returnType = '';
+    
 
     VoyagerListener.call(this); // inherit default listener
     return this;
 };
 
-function fill(target, dir) {
+
+
+function fill(target, dir,quadsRef) {
     console.log("TARGET", target, dir);
-    console.log("quads", this.Quads);
-    this.Quads[target].loc = dir;
+    console.log("quads", quadsRef);
+    quadsRef[target].loc = dir;
+
+    return quadsRef;
 }
 
 // continue inheriting default listener
@@ -53,7 +58,7 @@ Armstrong.prototype.enterFunc = function(ctx) {
     } else {
         if (ctx.ID().getText() == "main") {
             //console.log("QUADS",this.Quads)
-            fill(0, this.Quads.length);
+            this.Quads = fill(0, this.Quads.length,this.Quads);
         }
 
         let funcObj = new func(ctx.typefunc().getText(), ctx.ID().getText())
@@ -183,14 +188,13 @@ Armstrong.prototype.exitFactor = function(ctx) {
             let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
-            console.log(this.Quads)
             this.PilaO.push(result);
             this.PTypes.push(result_type);
         } else {
             console.log("ERROR type mismatch");
         }
     }
-
+ 
 }
 
 Armstrong.prototype.exitTermino = function(ctx) {
@@ -313,20 +317,19 @@ Armstrong.prototype.enterLee_condicion = function(ctx) {
 
 Armstrong.prototype.exitCondicion = function(ctx) {
     end = this.PJumps.pop();
-    //console.log("QUADS",this.Quads)
+    console.log("QUADS",this.Quads)
+    this.Quads = fill(end, this.Quads.length,this.Quads);
 
-    fill(end, this.Quads.length);
 
 }
-
 Armstrong.prototype.enterCondicion1 = function(ctx) {
     this.Quads.push(new quad("GOTO", null, null, null));
     falso = this.PJumps.pop();
     this.PJumps.push(this.Quads.length - 1);
-    console.log("QUADS", this.Quads)
-
-    fill(falso, this.Quads.length);
+    console.log("QUADS", this.Quads);
+    this.Quads = fill(falso, this.Quads.length,this.Quads);
 }
+
 
 Armstrong.prototype.enterCiclo = function(ctx) {
     this.PJumps.push(this.Quads.length);
@@ -337,8 +340,7 @@ Armstrong.prototype.exitCiclo = function(ctx) {
     ret = this.PJumps.pop();
     this.Quads.push(new quad("GOTO", ret, null, null));
     console.log("QUADS", this.Quads)
-
-    fill(end, this.Quads.length);
+    this.Quads = fill(end, this.Quads.length,this.Quads);
 
 }
 
@@ -375,8 +377,12 @@ Armstrong.prototype.exitLlamada = function(ctx) {
             let dirT = this.MemoriaTem.setValue(this.tablaFunc.dir[this.llamadaCtx].tipo, "Temporales", null);
             this.Quads.push(new quad("=", "regresa", null, dirT));
             this.PilaO.push(dirT);
+<<<<<<< HEAD
             this.PTypes.push(this.tablaFunc.dir[this.llamadaCtx.tipo]);
             this.return = false;
+=======
+            this.PTypes.push(this.tablaFunc.dir[this.llamadaCtx].tipo);
+>>>>>>> 028ab6662725251703f3bde95ac362f8810ce5e0
         }
 
         parCount = 0;
@@ -470,12 +476,12 @@ Armstrong.prototype.enterIdvector_asigna = function(ctx) {
 Armstrong.prototype.exitAsignacion = function(ctx) {
     let oDer = this.PTypes.pop();
     let oIzq = this.PTypes.pop();
+    //console.log("CUBO",oIzq,oDer, this.actualCtx)
     let result_type = cubo[oIzq][oDer]["="];
     let val = this.PilaO.pop();
     let dest = this.PilaO.pop();
     if (result_type != "error") {
         this.Quads.push(new quad("=", val, null, dest));
-        //console.log(this.Quads[0])
     } else {
         console.log("Error de tipos en la asignación");
 
@@ -519,7 +525,6 @@ Armstrong.prototype.enterProgram = function(ctx) {
 
 Armstrong.prototype.exitProgram = function(ctx) {
     this.Quads.push(new quad("END", null, null, null));
-    console.log(this.Quads);
 
     let MV = new MaquinaVirtual(this.tablaFunc, this.Quads, this.Memoria);
     MV.start();

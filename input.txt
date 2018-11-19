@@ -1,6 +1,6 @@
 programa {
     vacio hi () {
-	imprimir("hivrvrevr_ecerfer?r/fvv[]er"); 
+	imprimir("letrero"); 
     }
 
 
@@ -17,7 +17,7 @@ programa {
  
    vacio main() {
        var entero var1; 
-       var1 = bye();
+    var1 = bye();
         hi();
    }
    

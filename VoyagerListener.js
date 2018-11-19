@@ -20,6 +20,7 @@ VoyagerListener.prototype.exitVoyager = function(ctx) {
 };
 
 
+
 // Enter a parse tree produced by VoyagerParser#program.
 VoyagerListener.prototype.enterProgram = function(ctx) {
 };

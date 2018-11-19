@@ -20,7 +20,6 @@ class MaquinaVirtual{
     }
 
     start() {
-
         while (index < Quads.length) {
             let currQuad = Quads[index];
             console.log(currQuad.code);
@@ -109,72 +108,143 @@ class MaquinaVirtual{
     }
 
     suma(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.Value(right);
-        let leftType = this.Memoria.getVarType(left)[0];
-        let rightType = this.Memoria.getVarType(right)[0];
-        //let newLoc = this.Memoria.getVarType(loc);
-
-        if (leftType == Int && rightType == Int) {
-            this.Memoria.setInAddress(leftVal+rightVal,loc);
-        }else if(leftType != rightType){
-            this.Memoria.setInAddress(parseFloat(leftVal+rightVal),loc);
+        if (loc >= 16000) {
+            let leftVal = this.memTemp.getValue(left);
+            let rightVal = this.memTemp.getValue(right);
+            let leftType = this.memTemp.getVarType(left)[0];
+            let rightType = this.memTemp.getVarType(right)[0];
+            //let newLoc = this.Memoria.getVarType(loc);
+    
+            if (leftType == Int && rightType == Int) {
+                this.memTemp.setInAddress(leftVal/rightVal,loc);
+            }else if(leftType != rightType){
+                this.memTemp.setInAddress(parseFloat(leftVal+rightVal),loc);
+            }
+        }else{
+            let leftVal = this.Memoria.getValue(left);
+            let rightVal = this.Memoria.getValue(right);
+            let leftType = this.Memoria.getVarType(left)[0];
+            let rightType = this.Memoria.getVarType(right)[0];
+            //let newLoc = this.Memoria.getVarType(loc);
+    
+            if (leftType == Int && rightType == Int) {
+                this.Memoria.setInAddress(leftVal+rightVal,loc);
+            }else if(leftType != rightType){
+                this.Memoria.setInAddress(parseFloat(leftVal/rightVal),loc);
+            }
         }
         
     }
 
     resta(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.Value(right);
-        let leftType = this.Memoria.getVarType(left)[0];
-        let rightType = this.Memoria.getVarType(right)[0];
-        //let newLoc = this.Memoria.getVarType(loc);
-
-        if (leftType == Int && rightType == Int) {
-            this.Memoria.setInAddress(leftVal-rightVal,loc);
-        }else if(leftType != rightType){
-            this.Memoria.setInAddress(parseFloat(leftVal-rightVal),loc);
+        if (loc >= 16000) {
+            let leftVal = this.memTemp.getValue(left);
+            let rightVal = this.memTemp.getValue(right);
+            let leftType = this.memTemp.getVarType(left)[0];
+            let rightType = this.memTemp.getVarType(right)[0];
+            //let newLoc = this.Memoria.getVarType(loc);
+    
+            if (leftType == Int && rightType == Int) {
+                this.memTemp.setInAddress(leftVal/rightVal,loc);
+            }else if(leftType != rightType){
+                this.memTemp.setInAddress(parseFloat(leftVal-rightVal),loc);
+            }
+        }else{
+            let leftVal = this.Memoria.getValue(left);
+            let rightVal = this.Memoria.getValue(right);
+            let leftType = this.Memoria.getVarType(left)[0];
+            let rightType = this.Memoria.getVarType(right)[0];
+            //let newLoc = this.Memoria.getVarType(loc);
+    
+            if (leftType == Int && rightType == Int) {
+                this.Memoria.setInAddress(leftVal/rightVal,loc);
+            }else if(leftType != rightType){
+                this.Memoria.setInAddress(parseFloat(leftVal-rightVal),loc);
+            }
         }
         
     }
 
     mult(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.Value(right);
-        let leftType = this.Memoria.getVarType(left)[0];
-        let rightType = this.Memoria.getVarType(right)[0];
-        //let newLoc = this.Memoria.getVarType(loc);
-
-        if (leftType == Int && rightType == Int) {
-            this.Memoria.setInAddress(leftVal*rightVal,loc);
-        }else if(leftType != rightType){
-            this.Memoria.setInAddress(parseFloat(leftVal*rightVal),loc);
+        if (loc >= 16000) {
+            let leftVal = this.memTemp.getValue(left);
+            let rightVal = this.memTemp.Value(right);
+            let leftType = this.memTemp.getVarType(left)[0];
+            let rightType = this.memTemp.getVarType(right)[0];
+            //let newLoc = this.Memoria.getVarType(loc);
+    
+            if (leftType == Int && rightType == Int) {
+                this.memTemp.setInAddress(leftVal*rightVal,loc);
+            }else if(leftType != rightType){
+                this.memTemp.setInAddress(parseFloat(leftVal*rightVal),loc);
+            }
+        }else{
+            let leftVal = this.Memoria.getValue(left);
+            let rightVal = this.Memoria.Value(right);
+            let leftType = this.Memoria.getVarType(left)[0];
+            let rightType = this.Memoria.getVarType(right)[0];
+            //let newLoc = this.Memoria.getVarType(loc);
+    
+            if (leftType == Int && rightType == Int) {
+                this.Memoria.setInAddress(leftVal*rightVal,loc);
+            }else if(leftType != rightType){
+                this.Memoria.setInAddress(parseFloat(leftVal*rightVal),loc);
+            }
         }
+
         
     }
 
     div(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.getValue(right);
-        let leftType = this.Memoria.getVarType(left)[0];
-        let rightType = this.Memoria.getVarType(right)[0];
-        //let newLoc = this.Memoria.getVarType(loc);
 
-        if (leftType == Int && rightType == Int) {
-            this.Memoria.setInAddress(leftVal/rightVal,loc);
-        }else if(leftType != rightType){
-            this.Memoria.setInAddress(parseFloat(leftVal/rightVal),loc);
+
+        if (loc >= 16000) {
+            let leftVal = this.memTemp.getValue(left);
+            let rightVal = this.memTemp.getValue(right);
+            let leftType = this.memTemp.getVarType(left)[0];
+            let rightType = this.memTemp.getVarType(right)[0];
+            //let newLoc = this.Memoria.getVarType(loc);
+    
+            if (leftType == Int && rightType == Int) {
+                this.memTemp.setInAddress(leftVal/rightVal,loc);
+            }else if(leftType != rightType){
+                this.memTemp.setInAddress(parseFloat(leftVal/rightVal),loc);
+            }
+        }else{
+            let leftVal = this.Memoria.getValue(left);
+            let rightVal = this.Memoria.getValue(right);
+            let leftType = this.Memoria.getVarType(left)[0];
+            let rightType = this.Memoria.getVarType(right)[0];
+            //let newLoc = this.Memoria.getVarType(loc);
+    
+            if (leftType == Int && rightType == Int) {
+                this.Memoria.setInAddress(leftVal/rightVal,loc);
+            }else if(leftType != rightType){
+                this.Memoria.setInAddress(parseFloat(leftVal/rightVal),loc);
+            }
         }
+
         
     }
 
     ver(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        if (leftVal < loc || leftVal > 0) {
-            return true;
+
+        if (loc >= 16000) {
+            let leftVal = this.memTemp.getValue(left);
+            if (leftVal < loc || leftVal > 0) {
+                return true;
+            }else{
+                throw new Error(`Indice fuera de rango ${loc}`);
+            }
         }else{
-            throw new Error(`Indice fuera de rango ${loc}`);
+            let leftVal = this.Memoria.getValue(left);
+            if (leftVal < loc || leftVal > 0) {
+                return true;
+            }else{
+                throw new Error(`Indice fuera de rango ${loc}`);
+            }
         }
+
     }
 
     igualigual(left,right,loc){
@@ -182,7 +252,11 @@ class MaquinaVirtual{
         let rightVal = this.Memoria.getValue(right);
         let traduccion = leftVal==rightVal ? 'verdadero' : 'falso';
 
+        if (loc >= 16000) {
+            this.memTemp.setInAddress(traduccion,loc);
+        }else{
         this.Memoria.setInAddress(traduccion,loc);
+        }
     }
 
     menor(left,right,loc){
@@ -190,7 +264,11 @@ class MaquinaVirtual{
         let rightVal = this.Memoria.getValue(right);
         let traduccion = leftVal<rightVal ? 'verdadero' : 'falso';
 
+        if (loc >= 16000) {
+            this.memTemp.setInAddress(traduccion,loc);
+        }else{
         this.Memoria.setInAddress(traduccion,loc);
+        }
     }
 
     mayor(left,right,loc){
@@ -198,7 +276,11 @@ class MaquinaVirtual{
         let rightVal = this.Memoria.getValue(right);
         let traduccion = leftVal>rightVal ? 'verdadero' : 'falso';
 
+        if (loc >= 16000) {
+            this.memTemp.setInAddress(traduccion,loc);
+        }else{
         this.Memoria.setInAddress(traduccion,loc);
+        }
     }
 
     diferente(left,right,loc){
@@ -206,7 +288,11 @@ class MaquinaVirtual{
         let rightVal = this.Memoria.getValue(right);
         let traduccion = leftVal!=rightVal ? 'verdadero' : 'falso';
 
+        if (loc >= 16000) {
+            this.memTemp.setInAddress(traduccion,loc);
+        }else{
         this.Memoria.setInAddress(traduccion,loc);
+        }    
     }
 
     and(left,right,loc){
@@ -214,7 +300,11 @@ class MaquinaVirtual{
         let rightVal = this.Memoria.getValue(right);
         let traduccion = leftVal && rightVal ? 'verdadero' : 'falso';
 
+        if (loc >= 16000) {
+            this.memTemp.setInAddress(traduccion,loc);
+        }else{
         this.Memoria.setInAddress(traduccion,loc);
+        }    
     }
 
     or(left,right,loc){
@@ -222,7 +312,11 @@ class MaquinaVirtual{
         let rightVal = this.Memoria.getValue(right);
         let traduccion = leftVal || rightVal ? 'verdadero' : 'falso';
 
+        if (loc >= 16000) {
+            this.memTemp.setInAddress(traduccion,loc);
+        }else{
         this.Memoria.setInAddress(traduccion,loc);
+        }    
     }
 
     goto(left,right,loc){
@@ -238,27 +332,53 @@ class MaquinaVirtual{
     }
 
     param(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let leftType = this.Memoria.getVarType(left)[0];
-        
-        //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
-        this.colaParams.push({val:leftVal,tipo:leftType})
+        if (loc >= 16000) {
+            let leftVal = this.memTemp.getValue(left);
+            let leftType = this.memTemp.getVarType(left)[0];
+            
+            //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
+            this.colaParams.push({val:leftVal,tipo:leftType})
+        }else{
+            let leftVal = this.Memoria.getValue(left);
+            let leftType = this.Memoria.getVarType(left)[0];
+            
+            //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
+            this.colaParams.push({val:leftVal,tipo:leftType})
+        }   
     }
 
     gosub(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let leftType = this.Memoria.getVarType(left)[0];
-        
-        //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
-        this.colaParams.push({val:leftVal,tipo:leftType})
+
+        if (loc >= 16000) {
+            let leftVal = this.memTemp.getValue(left);
+            let leftType = this.memTemp.getVarType(left)[0];
+            
+            //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
+            this.colaParams.push({val:leftVal,tipo:leftType})
+        }else{
+            let leftVal = this.Memoria.getValue(left);
+            let leftType = this.Memoria.getVarType(left)[0];
+            
+            //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
+            this.colaParams.push({val:leftVal,tipo:leftType})
+        } 
+
     }
 
     igual(left,right,loc){
         let leftVal = this.Memoria.getValue(left);
-        if (left == "regresa") {
-            this.Memoria.setInAddress(this.globalVal,loc);
+        if (loc >= 16000) {
+            if (left == "regresa") {
+                this.memTemp.setInAddress(this.globalVal,loc);
+            }else{
+                this.memTemp.setInAddress(leftVal,loc); 
+            }
         }else{
-            this.Memoria.setInAddress(leftVal,loc); 
+            if (left == "regresa") {
+                this.Memoria.setInAddress(this.globalVal,loc);
+            }else{
+                this.Memoria.setInAddress(leftVal,loc); 
+            }
         }
 
     }

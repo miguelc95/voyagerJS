@@ -16,8 +16,8 @@ class func {
         this.arrVariable.push(val);
     }
 
-    addParamType(tipo) {
-        this.parameterTable.push(tipo);
+    addParam(val) {
+        this.parameterTable.push(val);
     }
 
     printFunc() {

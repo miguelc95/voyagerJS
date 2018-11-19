@@ -46,7 +46,7 @@ Armstrong.prototype.constructor = Armstrong;
 
 
 Armstrong.prototype.enterFunc = function(ctx) {
-
+    this.MemoriaTem = new memTemp();
 
     if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
         console.log('Error ya existe una función con ese nombre')
@@ -61,8 +61,9 @@ Armstrong.prototype.enterFunc = function(ctx) {
             console.log(nombre, i);
             let varObj = new variable(nombre.getText(), ctx.parametros().tipo()[i].getText());
             //get dir de variable y checar si también en la tabla de param se requiere todo el obj
+            varObj.dir_virtual = this.MemoriaTem.setValue(ctx.parametros().tipo()[i].getText(), "Locales", null);
             funcObj.addVariable(varObj);
-            funcObj.addParamType(ctx.parametros().tipo()[i].getText());
+            funcObj.addParam(varObj);
 
         });
         funcObj.numParam = funcObj.parameterTable.length;

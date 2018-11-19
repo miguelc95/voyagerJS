@@ -107,6 +107,8 @@ class MemTemp {
     }
 
     setValue(type, context, value) {
+        console.log(context);
+        console.log(type);
         this.memTemp[context][type].push(value);
         return this.bases[context][type] + this.memTemp[context][type].length - 1;
 

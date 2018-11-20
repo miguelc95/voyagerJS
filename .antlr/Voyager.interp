@@ -135,7 +135,7 @@ termino2
 factor
 operando
 vector_acceso
-acceso_afetrExp
+acceso_afterExp
 tipo
 lee_condicion
 verifica_tipo

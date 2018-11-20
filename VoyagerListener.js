@@ -353,12 +353,12 @@ VoyagerListener.prototype.exitVector_acceso = function(ctx) {
 };
 
 
-// Enter a parse tree produced by VoyagerParser#acceso_afetrExp.
-VoyagerListener.prototype.enterAcceso_afetrExp = function(ctx) {
+// Enter a parse tree produced by VoyagerParser#acceso_afterExp.
+VoyagerListener.prototype.enterAcceso_afterExp = function(ctx) {
 };
 
-// Exit a parse tree produced by VoyagerParser#acceso_afetrExp.
-VoyagerListener.prototype.exitAcceso_afetrExp = function(ctx) {
+// Exit a parse tree produced by VoyagerParser#acceso_afterExp.
+VoyagerListener.prototype.exitAcceso_afterExp = function(ctx) {
 };
 
 

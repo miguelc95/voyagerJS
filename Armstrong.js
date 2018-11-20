@@ -417,7 +417,6 @@ Armstrong.prototype.exitLlamada = function(ctx) {
 
 //vector_acceso  : ID ABRE_CORCHETE exp acceso_afterExp CIERRA_CORCHETE | /*epsilon*/;
 Armstrong.prototype.enterVector_acceso = function(ctx) {
-    console.log("entra a acceso");
     let esDim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
         return v.nombre == ctx.ID().getText() && v.dim != null;
     });
@@ -429,19 +428,27 @@ Armstrong.prototype.enterVector_acceso = function(ctx) {
 }
 
 Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
-    console.log("entra a afterexp");
 
     let vardim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
-        return v.nombre == ctx.ID().getText();
+        return v.nombre == ctx.parentCtx.ID().getText();
     });
     this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], null, vardim.dim));
     let aux1 = this.PilaO.pop();
     let auxType = this.PTypes.pop();
     let t = this.MemoriaTem.setValue("entero", "Temporales", null);
-    this.Quads.push(new quad("+", aux1, vardim.dir_virtual, t));
+    let m;
+    if (this.dirConst[vardim.dir_virtual] != undefined) {
+        m = this.dirConst[vardim.dir_virtual];
+    } else {
+        m = this.Memoria.setValue("entero", "Constantes", vardim.dir_virtual);
+        this.dirConst[vardim.dir_virtual] = m;
+    }
+
+    this.Quads.push(new quad("+", aux1, m, t));
     this.PilaO.push("" + t + "");
     this.PTypes.push(vardim.tipo);
     this.POper.pop();
+
 }
 
 /*declaracion            : VAR tipo idvector SEMI_COLON;

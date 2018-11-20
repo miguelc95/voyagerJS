@@ -1,4 +1,4 @@
-// Generated from /Users/miguelcuellar/Desktop/Campus/9no Semestre/Compis/voyagerJS/Voyager.g4 by ANTLR 4.7.1
+// Generated from /Users/iramD24/Workspace/Compiler/voyagerJS/Voyager.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.atn.*;
 import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.*;
@@ -34,7 +34,7 @@ public class VoyagerParser extends Parser {
 		RULE_ciclo = 23, RULE_llamada = 24, RULE_argumentos = 25, RULE_terminaArg = 26, 
 		RULE_expresion = 27, RULE_expresion1 = 28, RULE_expbool = 29, RULE_expbool1 = 30, 
 		RULE_exp = 31, RULE_exp1 = 32, RULE_termino = 33, RULE_termino2 = 34, 
-		RULE_factor = 35, RULE_operando = 36, RULE_vector_acceso = 37, RULE_acceso_afetrExp = 38, 
+		RULE_factor = 35, RULE_operando = 36, RULE_vector_acceso = 37, RULE_acceso_afterExp = 38, 
 		RULE_tipo = 39, RULE_lee_condicion = 40, RULE_verifica_tipo = 41, RULE_sig_argumento = 42, 
 		RULE_mete_tipo = 43, RULE_mete_id = 44;
 	public static final String[] ruleNames = {
@@ -44,7 +44,7 @@ public class VoyagerParser extends Parser {
 		"condicion", "condicion1", "declaracion", "idvector", "imprimir", "imprimir1", 
 		"ciclo", "llamada", "argumentos", "terminaArg", "expresion", "expresion1", 
 		"expbool", "expbool1", "exp", "exp1", "termino", "termino2", "factor", 
-		"operando", "vector_acceso", "acceso_afetrExp", "tipo", "lee_condicion", 
+		"operando", "vector_acceso", "acceso_afterExp", "tipo", "lee_condicion", 
 		"verifica_tipo", "sig_argumento", "mete_tipo", "mete_id"
 	};
 
@@ -2074,8 +2074,8 @@ public class VoyagerParser extends Parser {
 		public ExpContext exp() {
 			return getRuleContext(ExpContext.class,0);
 		}
-		public Acceso_afetrExpContext acceso_afetrExp() {
-			return getRuleContext(Acceso_afetrExpContext.class,0);
+		public Acceso_afterExpContext acceso_afterExp() {
+			return getRuleContext(Acceso_afterExpContext.class,0);
 		}
 		public TerminalNode CIERRA_CORCHETE() { return getToken(VoyagerParser.CIERRA_CORCHETE, 0); }
 		public Vector_accesoContext(ParserRuleContext parent, int invokingState) {
@@ -2097,7 +2097,7 @@ public class VoyagerParser extends Parser {
 			setState(341);
 			exp();
 			setState(342);
-			acceso_afetrExp();
+			acceso_afterExp();
 			setState(343);
 			match(CIERRA_CORCHETE);
 			}
@@ -2113,16 +2113,16 @@ public class VoyagerParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Acceso_afetrExpContext extends ParserRuleContext {
-		public Acceso_afetrExpContext(ParserRuleContext parent, int invokingState) {
+	public static class Acceso_afterExpContext extends ParserRuleContext {
+		public Acceso_afterExpContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_acceso_afetrExp; }
+		@Override public int getRuleIndex() { return RULE_acceso_afterExp; }
 	}
 
-	public final Acceso_afetrExpContext acceso_afetrExp() throws RecognitionException {
-		Acceso_afetrExpContext _localctx = new Acceso_afetrExpContext(_ctx, getState());
-		enterRule(_localctx, 76, RULE_acceso_afetrExp);
+	public final Acceso_afterExpContext acceso_afterExp() throws RecognitionException {
+		Acceso_afterExpContext _localctx = new Acceso_afterExpContext(_ctx, getState());
+		enterRule(_localctx, 76, RULE_acceso_afterExp);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

@@ -249,7 +249,7 @@ var ruleNames =  [ "voyager", "program", "bloqueprogram", "bloque1", "bloque2",
                    "imprimir1", "ciclo", "llamada", "argumentos", "terminaArg", 
                    "expresion", "expresion1", "expbool", "expbool1", "exp", 
                    "exp1", "termino", "termino2", "factor", "operando", 
-                   "vector_acceso", "acceso_afetrExp", "tipo", "lee_condicion", 
+                   "vector_acceso", "acceso_afterExp", "tipo", "lee_condicion", 
                    "verifica_tipo", "sig_argumento", "mete_tipo", "mete_id" ];
 
 function VoyagerParser (input) {
@@ -356,7 +356,7 @@ VoyagerParser.RULE_termino2 = 34;
 VoyagerParser.RULE_factor = 35;
 VoyagerParser.RULE_operando = 36;
 VoyagerParser.RULE_vector_acceso = 37;
-VoyagerParser.RULE_acceso_afetrExp = 38;
+VoyagerParser.RULE_acceso_afterExp = 38;
 VoyagerParser.RULE_tipo = 39;
 VoyagerParser.RULE_lee_condicion = 40;
 VoyagerParser.RULE_verifica_tipo = 41;
@@ -3582,8 +3582,8 @@ Vector_accesoContext.prototype.exp = function() {
     return this.getTypedRuleContext(ExpContext,0);
 };
 
-Vector_accesoContext.prototype.acceso_afetrExp = function() {
-    return this.getTypedRuleContext(Acceso_afetrExpContext,0);
+Vector_accesoContext.prototype.acceso_afterExp = function() {
+    return this.getTypedRuleContext(Acceso_afterExpContext,0);
 };
 
 Vector_accesoContext.prototype.CIERRA_CORCHETE = function() {
@@ -3620,7 +3620,7 @@ VoyagerParser.prototype.vector_acceso = function() {
         this.state = 341;
         this.exp();
         this.state = 342;
-        this.acceso_afetrExp();
+        this.acceso_afterExp();
         this.state = 343;
         this.match(VoyagerParser.CIERRA_CORCHETE);
     } catch (re) {
@@ -3637,7 +3637,7 @@ VoyagerParser.prototype.vector_acceso = function() {
     return localctx;
 };
 
-function Acceso_afetrExpContext(parser, parent, invokingState) {
+function Acceso_afterExpContext(parser, parent, invokingState) {
 	if(parent===undefined) {
 	    parent = null;
 	}
@@ -3646,35 +3646,35 @@ function Acceso_afetrExpContext(parser, parent, invokingState) {
 	}
 	antlr4.ParserRuleContext.call(this, parent, invokingState);
     this.parser = parser;
-    this.ruleIndex = VoyagerParser.RULE_acceso_afetrExp;
+    this.ruleIndex = VoyagerParser.RULE_acceso_afterExp;
     return this;
 }
 
-Acceso_afetrExpContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
-Acceso_afetrExpContext.prototype.constructor = Acceso_afetrExpContext;
+Acceso_afterExpContext.prototype = Object.create(antlr4.ParserRuleContext.prototype);
+Acceso_afterExpContext.prototype.constructor = Acceso_afterExpContext;
 
 
-Acceso_afetrExpContext.prototype.enterRule = function(listener) {
+Acceso_afterExpContext.prototype.enterRule = function(listener) {
     if(listener instanceof VoyagerListener ) {
-        listener.enterAcceso_afetrExp(this);
+        listener.enterAcceso_afterExp(this);
 	}
 };
 
-Acceso_afetrExpContext.prototype.exitRule = function(listener) {
+Acceso_afterExpContext.prototype.exitRule = function(listener) {
     if(listener instanceof VoyagerListener ) {
-        listener.exitAcceso_afetrExp(this);
+        listener.exitAcceso_afterExp(this);
 	}
 };
 
 
 
 
-VoyagerParser.Acceso_afetrExpContext = Acceso_afetrExpContext;
+VoyagerParser.Acceso_afterExpContext = Acceso_afterExpContext;
 
-VoyagerParser.prototype.acceso_afetrExp = function() {
+VoyagerParser.prototype.acceso_afterExp = function() {
 
-    var localctx = new Acceso_afetrExpContext(this, this._ctx, this.state);
-    this.enterRule(localctx, 76, VoyagerParser.RULE_acceso_afetrExp);
+    var localctx = new Acceso_afterExpContext(this, this._ctx, this.state);
+    this.enterRule(localctx, 76, VoyagerParser.RULE_acceso_afterExp);
     try {
         this.enterOuterAlt(localctx, 1);
 

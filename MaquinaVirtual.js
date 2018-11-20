@@ -453,6 +453,7 @@ class MaquinaVirtual {
     imprimir(left, right, loc) {
         left = this.checkBaseDir(left);
         right = this.checkBaseDir(right);
+        loc = this.checkBaseDir(loc);
         if (typeof loc == "string") {
             console.log(loc);
         } else {
@@ -487,7 +488,10 @@ class MaquinaVirtual {
     }
 
     checkBaseDir(dir) {
+
         if (typeof dir === 'string' || dir instanceof String && dir != "regresa" && dir != "falso" && dir != "verdadero") {
+            console.log(dir);
+            console.log(this.getValByContext(parseInt(dir)));
             return this.getValByContext(parseInt(dir));
         } else {
             return dir;

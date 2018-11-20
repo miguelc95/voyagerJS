@@ -3,20 +3,14 @@ programa {
     
     
    vacio main() {
-       var entero arr[5];
-       var entero b;
-       b = -24;
-       arr[3]=3;
-       arr[0]=0;
-       arr[2]=arr[3];
-       arr[1]=1;
-       arr[4]=4;
+       
+       var flotante arr[2];
+       var flotante a;
+       arr[1]=5;
+       arr[0]=2.5;
+       a= 3.0;
        imprimir(arr[0]);
        imprimir(arr[1]);
-       imprimir(arr[2]);
-       imprimir(arr[3]);
-       imprimir(arr[5]);
-       imprimir(b);
    }
    
 }

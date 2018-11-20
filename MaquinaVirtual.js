@@ -425,7 +425,7 @@ class MaquinaVirtual {
 
     igual(left, right, loc) {
         left = this.checkBaseDir(left);
-        right = this.checkBaseDir(right);
+        loc = this.checkBaseDir(loc);
         if (loc >= 16000) {
             if (left == "regresa") {
                 this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(this.globalVal, loc), loc);
@@ -491,7 +491,7 @@ class MaquinaVirtual {
 
         if (typeof dir === 'string' || dir instanceof String && dir != "regresa" && dir != "falso" && dir != "verdadero") {
             console.log(dir);
-            console.log(this.getValByContext(parseInt(dir)));
+            console.log("dir real", this.getValByContext(parseInt(dir)));
             return this.getValByContext(parseInt(dir));
         } else {
             return dir;

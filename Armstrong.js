@@ -435,6 +435,7 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
     this.Quads.push(new quad("VER", this.PilaO[this.PilaO.length - 1], null, vardim.dim));
     let aux1 = this.PilaO.pop();
     let auxType = this.PTypes.pop();
+    //Mandar error si exp no es entera
     let t = this.MemoriaTem.setValue("entero", "Temporales", null);
     let m;
     if (this.dirConst[vardim.dir_virtual] != undefined) {

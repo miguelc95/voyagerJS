@@ -5,12 +5,12 @@ programa {
    vacio main() {
        
        var flotante arr[2];
-       var flotante a;
-       arr[1]=5;
-       arr[0]=2.5;
-       a= 3.0;
-       imprimir(arr[0]);
+       var flotante b;
+       arr[1]=5.5;
+       arr[0]=arr[1];
+        b = 2*arr[0]*5;
        imprimir(arr[1]);
+       imprimir(b);
    }
    
 }

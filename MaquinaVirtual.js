@@ -100,9 +100,6 @@ class MaquinaVirtual {
                     this.gosub(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
-                case 'GOTOF':
-                    this.gotof(currQuad.left, currQuad.right, currQuad.loc);
-                    break;
 
                 case '=':
                     this.igual(currQuad.left, currQuad.right, currQuad.loc);
@@ -490,8 +487,8 @@ class MaquinaVirtual {
     checkBaseDir(dir) {
 
         if (typeof dir === 'string' || dir instanceof String && dir != "regresa" && dir != "falso" && dir != "verdadero") {
-            console.log(dir);
-            console.log("dir real", this.getValByContext(parseInt(dir)));
+            //console.log(dir);
+            //console.log("dir real", this.getValByContext(parseInt(dir)));
             return this.getValByContext(parseInt(dir));
         } else {
             return dir;

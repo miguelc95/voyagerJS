@@ -323,21 +323,6 @@ Armstrong.prototype.enterExpresion1 = function(ctx) {
 
 }
 
-Armstrong.prototype.enterLee_condicion = function(ctx) {
-    let exp_type = this.PTypes.pop();
-    //console.log(exp_type);
-
-    if (exp_type != "bool") {
-        console.log("ERROR, los tipos no concuerdan", exp_type);
-
-    } else {
-        res = this.PilaO.pop();
-        this.Quads.push(new quad("GOTOF", res, null, null));
-        this.PJumps.push(this.Quads.length - 1);
-
-    }
-
-}
 
 Armstrong.prototype.exitCondicion = function(ctx) {
     end = this.PJumps.pop();
@@ -354,6 +339,22 @@ Armstrong.prototype.enterCondicion1 = function(ctx) {
     this.Quads = fill(falso, this.Quads.length, this.Quads);
 }
 
+Armstrong.prototype.enterLee_condicion = function(ctx) {
+    let exp_type = this.PTypes.pop();
+    //console.log(exp_type);
+
+    if (exp_type != "bool") {
+        console.log("ERROR, los tipos no concuerdan", exp_type);
+
+    } else {
+        res = this.PilaO.pop();
+        this.Quads.push(new quad("GOTOF", res, null, null));
+        this.PJumps.push(this.Quads.length - 1);
+
+    }
+
+}
+
 
 Armstrong.prototype.enterCiclo = function(ctx) {
     this.PJumps.push(this.Quads.length);
@@ -362,8 +363,8 @@ Armstrong.prototype.enterCiclo = function(ctx) {
 Armstrong.prototype.exitCiclo = function(ctx) {
     end = this.PJumps.pop();
     ret = this.PJumps.pop();
-    this.Quads.push(new quad("GOTO", ret, null, null));
-    console.log("QUADS", this.Quads)
+    this.Quads.push(new quad("GOTO", null, null, ret));
+    //console.log("QUADS", this.Quads)
     this.Quads = fill(end, this.Quads.length, this.Quads);
 
 }

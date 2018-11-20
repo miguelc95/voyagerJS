@@ -6,13 +6,6 @@ class echo {
     //CADA VEZ QUE SE ENTRA A UNA FUCNION SE HAGA INSTANCIA DE MEMORIA LOCAL Y TEMPORTAL Y METER A PILA PRA MANEJAR RECURSIVIDAD
     constructor() {
         this.bases = [];
-        this.constantes = [];
-        this.globales = [];
-        this.funcs = [
-            [
-                []
-            ]
-        ]; //funcs[nombreFunc][type]['local' | 'temporal] = []
 
         this.memoria = [];
         //MEMORIA
@@ -46,7 +39,7 @@ class echo {
 
     getContext(address) {
         switch (true) {
-            case address <= 6000:
+            case address < 8000:
                 return 'Globales';
             case address >= 8000:
                 return 'Constantes';
@@ -58,7 +51,7 @@ class echo {
 
     getVarType(address) {
         switch (true) {
-            case address <= 6000:
+            case address < 8000:
                 switch (true) {
                     case address < 2000:
                         return ['entero', 'Globales']
@@ -69,7 +62,8 @@ class echo {
                     case address < 6000:
                         return ['char', 'Globales']
                         break;
-                    case address >= 6000:
+                        å
+                    case address < 8000:
                         return ['bool', 'Globales']
                         break;
                     default:
@@ -77,13 +71,13 @@ class echo {
                 }
             case address >= 8000:
                 switch (true) {
-                    case address < 8000:
+                    case address < 10000:
                         return ['entero', 'Constantes']
                         break;
-                    case address < 10000:
+                    case address < 12000:
                         return ['flotante', 'Constantes']
                         break;
-                    case address < 12000:
+                    case address < 14000:
                         return ['char', 'Constantes']
                         break;
                     case address >= 14000:
@@ -106,17 +100,7 @@ class echo {
 
     getValue(address) {
         let [type, context] = this.getVarType(address);
-        switch (context) {
-            case 'Globales':
-                return this.globales[type][address - this.bases[context][type]];
-                break;
-            case 'Constantes':
-                return this.constantes[type][address - this.bases[context][type]];
-                break;
-            default:
-                console.log("No se encontro la variable en la memoria")
-                break;
-        }
+        return this.memoria[context][type][address - this.bases[context][type]];
     }
 
     setValue(type, context, value) {

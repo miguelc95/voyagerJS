@@ -52,17 +52,17 @@ llamada                : ID ABRE_PAREN argumentos CIERRA_PAREN;
 argumentos             : expresion terminaArg (COMA expresion terminaArg )* |  /*epsilon*/;
 terminaArg             : /*epsilon*/;
 
-expbool                : exp expbool1;
-expbool1               : MAS_QUE exp | MENOS_QUE exp | IGUAL_IGUAL exp | DIFERENTE_DE exp | /*epsilon*/;
-
 expresion              : expbool expresion1;
-expresion1             : AND expbool | OR expbool | /*epsilon*/;
+expresion1             : AND expbool expresion1 | OR expbool expresion1 |/*epsilon*/;
+
+expbool                : exp expbool1;
+expbool1               : MAS_QUE exp expbool1 | MENOS_QUE exp expbool1| IGUAL_IGUAL exp expbool1 | DIFERENTE_DE exp expbool1| /*epsilon*/;
 
 exp                    : termino exp1;
-exp1                   : SUMA termino | RESTA termino | /*epsilon*/;
+exp1                   : SUMA termino exp1 | RESTA termino exp1 |/*epsilon*/;
 
 termino                : factor termino2;
-termino2               : MULT factor | DIV factor| /*epsilon*/;
+termino2               : MULT factor termino2 | DIV factor termino2 |/*epsilon*/;
 
 factor                 : ABRE_PAREN expresion CIERRA_PAREN | operando;
 

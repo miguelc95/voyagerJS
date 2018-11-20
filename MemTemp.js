@@ -37,7 +37,7 @@ class MemTemp {
 
     getContext(address) {
         switch (true) {
-            case address <= 22000:
+            case address < 24000:
                 return 'Locales';
             case address >= 24000:
                 return 'Temporales';
@@ -49,16 +49,17 @@ class MemTemp {
 
 
     getVarType(address) {
+        //console.log("DIRECCION", address)
         switch (true) {
-            case address >= 16000 && address < 22000:
+            case address >= 16000 && address < 24000:
                 switch (true) {
-                    case address < 16000:
+                    case address < 18000:
                         return ['entero', 'Locales']
                         break;
-                    case address < 18000:
+                    case address < 20000:
                         return ['flotante', 'Locales']
                         break;
-                    case address < 20000:
+                    case address < 22000:
                         return ['char', 'Locales']
                         break;
                     case address >= 22000:
@@ -67,15 +68,15 @@ class MemTemp {
                     default:
                         break;
                 }
-            case address >= 24000 && address < 30000:
+            case address >= 24000 && address < 32000:
                 switch (true) {
-                    case address < 24000:
+                    case address < 26000:
                         return ['entero', 'Temporales']
                         break;
-                    case address < 26000:
+                    case address < 28000:
                         return ['flotante', 'Temporales']
                         break;
-                    case address < 28000:
+                    case address < 30000:
                         return ['char', 'Temporales']
                         break;
                     case address >= 30000:
@@ -93,22 +94,10 @@ class MemTemp {
 
     getValue(address) {
         let [type, context] = this.getVarType(address);
-        switch (context) {
-            case 'Locales':
-                return this.funcs[nombreFunc][type][address - this.bases[context][type]];
-                break;
-            case 'Temporales':
-                return this.funcs[nombreFunc][type][address - this.bases[context][type]];
-                break;
-            default:
-                console.log("No se encontro la variable en la memoria")
-                break;
-        }
+        return this.memTemp[context][type][address - this.bases[context][type]];
     }
 
     setValue(type, context, value) {
-        console.log(context);
-        console.log(type);
         this.memTemp[context][type].push(value);
         return this.bases[context][type] + this.memTemp[context][type].length - 1;
 
@@ -118,8 +107,6 @@ class MemTemp {
     saveInAddress(val, address) {
         let [type, context] = this.getVarType(address);
         this.memTemp[context][type][address - this.bases[context][type]] = val;
-        this.funcs[nombreFunc][context][type][address - this.bases[context][type]] = val;
     }
-
 }
 exports.MemTemp = MemTemp

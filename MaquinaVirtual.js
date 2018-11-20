@@ -4,392 +4,414 @@ const variable = require('./Tablas/Structs/variable').variable;
 var VoyagerListener = require('./VoyagerListener').VoyagerListener;
 const cubo = require('./cubo.json');
 const quad = require('./Tablas/Structs/quad').quad;
-const memTemp = require('./MemTemp').memTemp;
+const memTemp = require('./MemTemp').MemTemp;
 
 // PARA SABER EN LA DIRECCION DONDE QUEREMOS GUARDAR LOS PARAMETROS SE ACCEDE A TABLAFUNC.FUNCIONS A LA QUE SE ENTRA Y TABLA DE PARAMETROS PARA ACCEDER A LAS DIRECCIONES NECESARIAS
-class MaquinaVirtual{
-    
-    constructor(tablaFunc,Quads,Memoria){
+class MaquinaVirtual {
+
+    constructor(tablaFunc, Quads, Memoria) {
         this.tablaFunc = tablaFunc;
         this.Quads = Quads;
         this.Memoria = Memoria;
         this.globalVal = -1;
         this.index = 0;
         this.colaParams = [];
+        this.pilaScopes = [];
+        this.actualCtx = "main";
+        this.pilaScopesNames = [];
+        this.returnQuad = 0;
 
     }
 
     start() {
-        while (index < Quads.length) {
-            let currQuad = Quads[index];
-            console.log(currQuad.code);
+        this.pilaScopes.push(new memTemp());
+        this.pilaScopesNames.push(this.actualCtx);
+        while (this.index < this.Quads.length) {
+            let currQuad = this.Quads[this.index];
+            //console.log(this.index);
+
+            //console.log(this.index)
             switch (currQuad.code) {
                 case '+':
-                    this.suma(currQuad.left,currQuad.right,currQuad.loc);
+                    this.suma(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '-':
-                    this.resta(currQuad.left,currQuad.right,currQuad.loc);
+                    this.resta(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '*':
-                    this.mult(currQuad.left,currQuad.right,currQuad.loc);
+                    this.mult(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '/':
-                    this.div(currQuad.left,currQuad.right,currQuad.loc);
+                    this.div(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case 'VER':
-                    this.ver(currQuad.left,currQuad.right,currQuad.loc);
+                    this.ver(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '==':
-                this.igualigual(currQuad.left,currQuad.right,currQuad.loc);
+                    this.igualigual(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '<':
-                    this.menos(currQuad.left,currQuad.right,currQuad.loc);
+                    this.menor(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '>':
-                    this.mayor(currQuad.left,currQuad.right,currQuad.loc);
+                    this.mayor(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '!=':
-                    this.diferente(currQuad.left,currQuad.right,currQuad.loc);
+                    this.diferente(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '&&':
-                    this.and(currQuad.left,currQuad.right,currQuad.loc);
+                    this.and(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '||':
-                    this.or(currQuad.left,currQuad.right,currQuad.loc);
+                    this.or(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
-                case 'Goto':
-                    this.goto(currQuad.left,currQuad.right,currQuad.loc);
+                case 'GOTO':
+                    this.goto(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
-                case 'GotoF':
-                    this.gotof(currQuad.left,currQuad.right,currQuad.loc);
+                case 'GOTOF':
+                    this.gotof(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case 'ERA':
-                    //
+                    //falta
+                    this.era(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case 'PARAM':
-                    this.param(currQuad.left,currQuad.right,currQuad.loc);
+                    //falta
+                    this.param(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case 'GOSUB':
-                    
+                    //falta
+                    this.gosub(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
-                case 'GotoF':
-                    
+                case 'GOTOF':
+                    this.gotof(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case '=':
-                    
+                    this.igual(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
                 case 'RETURN':
-                    
+                    //falta
+                    this.return(currQuad.left, currQuad.right, currQuad.loc);
                     break;
-            
+
+                case 'ENDPROC':
+                    this.endproc(currQuad.left, currQuad.right, currQuad.loc);
+                    break;
+
+                case 'IMPRIMIR':
+                    this.imprimir(currQuad.left, currQuad.right, currQuad.loc);
+                    break;
+
                 default:
                     break;
             }
-            index+=1;
+            this.index += 1;
         }
     }
 
-    suma(left,right,loc){
+    suma(left, right, loc) {
+        let leftVal = this.getValByContext(left);
+        let rightVal = this.getValByContext(right);
+        let leftType = this.getTypeByContext(left);
+        let rightType = this.getTypeByContext(right);
         if (loc >= 16000) {
-            let leftVal = this.memTemp.getValue(left);
-            let rightVal = this.memTemp.getValue(right);
-            let leftType = this.memTemp.getVarType(left)[0];
-            let rightType = this.memTemp.getVarType(right)[0];
-            //let newLoc = this.Memoria.getVarType(loc);
-    
-            if (leftType == Int && rightType == Int) {
-                this.memTemp.setInAddress(leftVal/rightVal,loc);
-            }else if(leftType != rightType){
-                this.memTemp.setInAddress(parseFloat(leftVal+rightVal),loc);
-            }
-        }else{
-            let leftVal = this.Memoria.getValue(left);
-            let rightVal = this.Memoria.getValue(right);
-            let leftType = this.Memoria.getVarType(left)[0];
-            let rightType = this.Memoria.getVarType(right)[0];
-            //let newLoc = this.Memoria.getVarType(loc);
-    
-            if (leftType == Int && rightType == Int) {
-                this.Memoria.setInAddress(leftVal+rightVal,loc);
-            }else if(leftType != rightType){
-                this.Memoria.setInAddress(parseFloat(leftVal/rightVal),loc);
-            }
-        }
-        
-    }
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal + rightVal, loc), loc);
 
-    resta(left,right,loc){
-        if (loc >= 16000) {
-            let leftVal = this.memTemp.getValue(left);
-            let rightVal = this.memTemp.getValue(right);
-            let leftType = this.memTemp.getVarType(left)[0];
-            let rightType = this.memTemp.getVarType(right)[0];
-            //let newLoc = this.Memoria.getVarType(loc);
-    
-            if (leftType == Int && rightType == Int) {
-                this.memTemp.setInAddress(leftVal/rightVal,loc);
-            }else if(leftType != rightType){
-                this.memTemp.setInAddress(parseFloat(leftVal-rightVal),loc);
-            }
-        }else{
-            let leftVal = this.Memoria.getValue(left);
-            let rightVal = this.Memoria.getValue(right);
-            let leftType = this.Memoria.getVarType(left)[0];
-            let rightType = this.Memoria.getVarType(right)[0];
-            //let newLoc = this.Memoria.getVarType(loc);
-    
-            if (leftType == Int && rightType == Int) {
-                this.Memoria.setInAddress(leftVal/rightVal,loc);
-            }else if(leftType != rightType){
-                this.Memoria.setInAddress(parseFloat(leftVal-rightVal),loc);
-            }
-        }
-        
-    }
-
-    mult(left,right,loc){
-        if (loc >= 16000) {
-            let leftVal = this.memTemp.getValue(left);
-            let rightVal = this.memTemp.Value(right);
-            let leftType = this.memTemp.getVarType(left)[0];
-            let rightType = this.memTemp.getVarType(right)[0];
-            //let newLoc = this.Memoria.getVarType(loc);
-    
-            if (leftType == Int && rightType == Int) {
-                this.memTemp.setInAddress(leftVal*rightVal,loc);
-            }else if(leftType != rightType){
-                this.memTemp.setInAddress(parseFloat(leftVal*rightVal),loc);
-            }
-        }else{
-            let leftVal = this.Memoria.getValue(left);
-            let rightVal = this.Memoria.Value(right);
-            let leftType = this.Memoria.getVarType(left)[0];
-            let rightType = this.Memoria.getVarType(right)[0];
-            //let newLoc = this.Memoria.getVarType(loc);
-    
-            if (leftType == Int && rightType == Int) {
-                this.Memoria.setInAddress(leftVal*rightVal,loc);
-            }else if(leftType != rightType){
-                this.Memoria.setInAddress(parseFloat(leftVal*rightVal),loc);
-            }
+        } else {
+            this.Memoria.saveInAddress(this.castResult(leftVal + rightVal, loc), loc);
         }
 
-        
+
     }
 
-    div(left,right,loc){
-
-
+    resta(left, right, loc) {
+        let leftVal = this.getValByContext(left);
+        let rightVal = this.getValByContext(right);
+        let leftType = this.getTypeByContext(left);
+        let rightType = this.getTypeByContext(right);
         if (loc >= 16000) {
-            let leftVal = this.memTemp.getValue(left);
-            let rightVal = this.memTemp.getValue(right);
-            let leftType = this.memTemp.getVarType(left)[0];
-            let rightType = this.memTemp.getVarType(right)[0];
-            //let newLoc = this.Memoria.getVarType(loc);
-    
-            if (leftType == Int && rightType == Int) {
-                this.memTemp.setInAddress(leftVal/rightVal,loc);
-            }else if(leftType != rightType){
-                this.memTemp.setInAddress(parseFloat(leftVal/rightVal),loc);
-            }
-        }else{
-            let leftVal = this.Memoria.getValue(left);
-            let rightVal = this.Memoria.getValue(right);
-            let leftType = this.Memoria.getVarType(left)[0];
-            let rightType = this.Memoria.getVarType(right)[0];
-            //let newLoc = this.Memoria.getVarType(loc);
-    
-            if (leftType == Int && rightType == Int) {
-                this.Memoria.setInAddress(leftVal/rightVal,loc);
-            }else if(leftType != rightType){
-                this.Memoria.setInAddress(parseFloat(leftVal/rightVal),loc);
-            }
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal - rightVal, loc), loc);
+        } else {
+            this.Memoria.saveInAddress(this.castResult(leftVal - rightVal, loc), loc);
         }
 
-        
     }
 
-    ver(left,right,loc){
+    mult(left, right, loc) {
+        let leftVal = this.getValByContext(left);
+        let rightVal = this.getValByContext(right);
+        let leftType = this.getTypeByContext(left);
+        let rightType = this.getTypeByContext(right);
+        if (loc >= 16000) {
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal * rightVal, loc), loc);
+
+        } else {
+            this.Memoria.saveInAddress(this.castResult(leftVal * rightVal, loc), loc);
+
+        }
+
+
+    }
+
+    div(left, right, loc) {
+        let leftVal = this.getValByContext(left);
+        let rightVal = this.getValByContext(right);
+        let leftType = this.getTypeByContext(left);
+        let rightType = this.getTypeByContext(right);
 
         if (loc >= 16000) {
-            let leftVal = this.memTemp.getValue(left);
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal / rightVal, loc), loc);
+        } else {
+            this.Memoria.saveInAddress(this.castResult(leftVal / rightVal, loc), loc);
+        }
+
+
+    }
+
+    ver(left, right, loc) {
+        let leftVal = this.getValByContext(left);
+        if (loc >= 16000) {
             if (leftVal < loc || leftVal > 0) {
                 return true;
-            }else{
+            } else {
                 throw new Error(`Indice fuera de rango ${loc}`);
             }
-        }else{
-            let leftVal = this.Memoria.getValue(left);
+        } else {
             if (leftVal < loc || leftVal > 0) {
                 return true;
-            }else{
+            } else {
                 throw new Error(`Indice fuera de rango ${loc}`);
             }
         }
 
     }
 
-    igualigual(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.getValue(right);
-        let traduccion = leftVal==rightVal ? 'verdadero' : 'falso';
-
+    igualigual(left, right, loc) {
+        let leftVal = this.getValByContext(left)
+        let rightVal = this.getValByContext(right)
         if (loc >= 16000) {
-            this.memTemp.setInAddress(traduccion,loc);
-        }else{
-        this.Memoria.setInAddress(traduccion,loc);
+            let traduccion = leftVal == rightVal ? 'verdadero' : 'falso';
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+        } else {
+            let traduccion = leftVal == rightVal ? 'verdadero' : 'falso';
+            this.Memoria.saveInAddress(traduccion, loc);
         }
     }
 
-    menor(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.getValue(right);
-        let traduccion = leftVal<rightVal ? 'verdadero' : 'falso';
-
+    menor(left, right, loc) {
+        let leftVal = this.getValByContext(left)
+        let rightVal = this.getValByContext(right)
         if (loc >= 16000) {
-            this.memTemp.setInAddress(traduccion,loc);
-        }else{
-        this.Memoria.setInAddress(traduccion,loc);
+            let traduccion = leftVal < rightVal ? 'verdadero' : 'falso';
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+        } else {
+            let traduccion = leftVal < rightVal ? 'verdadero' : 'falso';
+            this.Memoria.saveInAddress(traduccion, loc);
         }
     }
 
-    mayor(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.getValue(right);
-        let traduccion = leftVal>rightVal ? 'verdadero' : 'falso';
-
+    mayor(left, right, loc) {
+        let leftVal = this.getValByContext(left)
+        let rightVal = this.getValByContext(right)
         if (loc >= 16000) {
-            this.memTemp.setInAddress(traduccion,loc);
-        }else{
-        this.Memoria.setInAddress(traduccion,loc);
+            let traduccion = leftVal > rightVal ? 'verdadero' : 'falso';
+            //console.log(this.pilaScopes[this.pilaScopes.length - 1]);
+
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+        } else {
+            let traduccion = leftVal > rightVal ? 'verdadero' : 'falso';
+            this.Memoria.saveInAddress(traduccion, loc);
         }
     }
 
-    diferente(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.getValue(right);
-        let traduccion = leftVal!=rightVal ? 'verdadero' : 'falso';
-
+    diferente(left, right, loc) {
+        let leftVal = this.getValByContext(left)
+        let rightVal = this.getValByContext(right)
         if (loc >= 16000) {
-            this.memTemp.setInAddress(traduccion,loc);
-        }else{
-        this.Memoria.setInAddress(traduccion,loc);
-        }    
+            let traduccion = leftVal != rightVal ? 'verdadero' : 'falso';
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+        } else {
+            let traduccion = leftVal != rightVal ? 'verdadero' : 'falso';
+            this.Memoria.saveInAddress(traduccion, loc);
+        }
     }
 
-    and(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.getValue(right);
-        let traduccion = leftVal && rightVal ? 'verdadero' : 'falso';
-
+    and(left, right, loc) {
+        let leftVal = this.getValByContext(left)
+        let rightVal = this.getValByContext(right)
+        let tradL = leftVal == "verdadero" ? true : false;
+        let tradR = rightVal == "verdadero" ? true : false;
         if (loc >= 16000) {
-            this.memTemp.setInAddress(traduccion,loc);
-        }else{
-        this.Memoria.setInAddress(traduccion,loc);
-        }    
+            let traduccion = tradL && tradR ? 'verdadero' : 'falso';
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+        } else {
+            let traduccion = tradL && tradR ? 'verdadero' : 'falso';
+            this.Memoria.saveInAddress(traduccion, loc);
+        }
     }
 
-    or(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        let rightVal = this.Memoria.getValue(right);
-        let traduccion = leftVal || rightVal ? 'verdadero' : 'falso';
-
+    or(left, right, loc) {
+        let leftVal = this.getValByContext(left)
+        let rightVal = this.getValByContext(right)
+        let tradL = leftVal == "verdadero" ? true : false;
+        let tradR = rightVal == "verdadero" ? true : false;
         if (loc >= 16000) {
-            this.memTemp.setInAddress(traduccion,loc);
-        }else{
-        this.Memoria.setInAddress(traduccion,loc);
-        }    
+            let traduccion = tradL || tradR ? 'verdadero' : 'falso';
+            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+        } else {
+            let traduccion = tradL || tradR ? 'verdadero' : 'falso';
+            this.Memoria.saveInAddress(traduccion, loc);
+        }
     }
 
-    goto(left,right,loc){
-        this.index = left;
+    goto(left, right, loc) {
+        this.index = loc - 1;
     }
 
-    gotof(left,right,loc){
-        this.index = left;
-    }
+    gotof(left, right, loc) {
+            let leftVal = this.getValByContext(left);
+            //console.log(leftVal);
 
-    era(left,right,loc){  //SOS
-        this.index = left;
-    }
-
-    param(left,right,loc){
-        if (loc >= 16000) {
-            let leftVal = this.memTemp.getValue(left);
-            let leftType = this.memTemp.getVarType(left)[0];
-            
-            //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
-            this.colaParams.push({val:leftVal,tipo:leftType})
-        }else{
-            let leftVal = this.Memoria.getValue(left);
-            let leftType = this.Memoria.getVarType(left)[0];
-            
-            //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
-            this.colaParams.push({val:leftVal,tipo:leftType})
-        }   
-    }
-
-    gosub(left,right,loc){
-
-        if (loc >= 16000) {
-            let leftVal = this.memTemp.getValue(left);
-            let leftType = this.memTemp.getVarType(left)[0];
-            
-            //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
-            this.colaParams.push({val:leftVal,tipo:leftType})
-        }else{
-            let leftVal = this.Memoria.getValue(left);
-            let leftType = this.Memoria.getVarType(left)[0];
-            
-            //this.Memoria.setInAddress(this.globalVal,this.bases['Locales'][leftType] + loc);
-            this.colaParams.push({val:leftVal,tipo:leftType})
-        } 
-
-    }
-
-    igual(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
-        if (loc >= 16000) {
-            if (left == "regresa") {
-                this.memTemp.setInAddress(this.globalVal,loc);
-            }else{
-                this.memTemp.setInAddress(leftVal,loc); 
-            }
-        }else{
-            if (left == "regresa") {
-                this.Memoria.setInAddress(this.globalVal,loc);
-            }else{
-                this.Memoria.setInAddress(leftVal,loc); 
+            if (leftVal == "falso") {
+                this.index = loc - 1;
             }
         }
+        ////////////////////////////////////////////////
+    era(left, right, loc) { //SOS
+        this.pilaScopes.push(new memTemp());
+        this.actualCtx = left;
+        this.pilaScopesNames.push(this.actualCtx);
+
 
     }
-    
-    return(left,right,loc){
-        let leftVal = this.Memoria.getValue(left);
+
+    param(left, right, loc) {
+        let leftVal;
+        if (left >= 16000) {
+            leftVal = this.pilaScopes[this.pilaScopes.length - 2].getValue(left);
+        } else {
+            leftVal = this.Memoria.getValue(left);
+        }
+        this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(leftVal, this.tablaFunc.dir[this.actualCtx].parameterTable[loc].dir_virtual);
+    }
+
+    gosub(left, right, loc) {
+        this.returnQuad = right - 1;
+        this.index = loc - 1;
+    }
+
+    return (left, right, loc) {
+        let leftVal = this.getValByContext(left);
         this.globalVal = leftVal;
     }
 
-    
+    endproc(left, right, loc) {
+        this.pilaScopes.pop()
+
+
+        //console.log(this.pilaScopesNames[this.pilaScopesNames.length - 1]);
+        if (this.pilaScopesNames[this.pilaScopesNames.length - 1] != "main") {
+            this.index = this.returnQuad;
+        }
+
+        this.pilaScopesNames.pop();
+
+    }
+
+    igual(left, right, loc) {
+        if (loc >= 16000) {
+            if (left == "regresa") {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(this.globalVal, loc), loc);
+            } else {
+                let leftVal = this.getValByContext(left);
+                //console.log("LEFT VAL", left, leftVal);
+
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal, loc), loc);
+            }
+        } else {
+            if (left == "regresa") {
+                this.Memoria.saveInAddress(this.castResult(this.globalVal, loc), loc);
+            } else {
+                let leftVal = this.getValByContext(left);
+                this.Memoria.saveInAddress(this.castResult(leftVal, loc), loc);
+            }
+        }
+
+    }
+
+    imprimir(left, right, loc) {
+        if (typeof loc == "string") {
+            console.log(loc);
+        } else {
+            console.log(this.getValByContext(loc));
+        }
+    }
+
+    getValByContext(address) {
+        if (address >= 16000) {
+            return this.pilaScopes[this.pilaScopes.length - 1].getValue(address);
+        } else {
+            return this.Memoria.getValue(address);
+        }
+    }
+
+    getTypeByContext(address) {
+        if (address >= 16000) {
+            return this.pilaScopes[this.pilaScopes.length - 1].getVarType(address)[0];
+        } else {
+            return this.Memoria.getVarType(address)[0];
+        }
+    }
+
+    castResult(val, address) {
+        if (address >= 16000) {
+            let tipo = this.pilaScopes[this.pilaScopes.length - 1].getVarType(address)[0];
+            switch (tipo) {
+                case 'entero':
+                    return parseInt(val);
+                    break;
+                case 'flotante':
+                    return parseFloat(val);
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            let tipo = this.Memoria.getVarType(address)[0];
+            switch (tipo) {
+                case 'entero':
+                    return parseInt(val);
+                    break;
+                case 'flotante':
+                    return parseFloat(val);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        return val;
+    }
+
+
 }
 
-exports.MaquinaVirtual = MaquinaVirtual;
-
+exports.MaquinaVirtual = MaquinaVirtual

@@ -27,7 +27,7 @@ var Armstrong = function() {
     //temporales
     this.parCount = 0;
     this.llamadaCtx = '';
-    this.return = false;
+    //this.return = false;
     this.returnType = '';
 
 
@@ -38,8 +38,8 @@ var Armstrong = function() {
 
 
 function fill(target, dir, quadsRef) {
-    console.log("TARGET", target, dir);
-    console.log("quads", quadsRef);
+    //console.log("TARGET", target, dir);
+    //console.log("quads", quadsRef);
     quadsRef[target].loc = dir;
 
     return quadsRef;
@@ -64,7 +64,7 @@ Armstrong.prototype.enterFunc = function(ctx) {
         let funcObj = new func(ctx.typefunc().getText(), ctx.ID().getText())
         this.actualCtx = ctx.ID().getText()
         ctx.parametros().ID().forEach((nombre, i) => {
-            console.log(nombre, i);
+            //console.log(nombre, i);
             let varObj = new variable(nombre.getText(), ctx.parametros().tipo()[i].getText());
             //get dir de variable y checar si también en la tabla de param se requiere todo el obj
             varObj.dir_virtual = this.MemoriaTem.setValue(ctx.parametros().tipo()[i].getText(), "Locales", null);
@@ -101,7 +101,7 @@ Armstrong.prototype.enterOperando = function(ctx) {
         this.PilaO.push(dirV)
         this.PTypes.push('entero');
     } else if (ctx.CTE_F() != null) {
-        let cteF = float(ctx.CTE_F().getText())
+        let cteF = parseFloat(ctx.CTE_F().getText())
         if (this.dirConst[cteF] != undefined) {
             dirV = this.dirConst[cteF];
         } else {
@@ -150,6 +150,7 @@ Armstrong.prototype.enterOperando = function(ctx) {
             return v.nombre == id;
         });
         if (v != null) {
+
             this.PilaO.push(v.dir_virtual);
             this.PTypes.push(v.tipo);
         } else if (this.dirGlob[id] != undefined) {
@@ -177,7 +178,11 @@ Armstrong.prototype.exitFactor = function(ctx) {
     if (ctx.CIERRA_PAREN() != null) {
         this.POper.pop();
     }
-    if (this.POper[this.POper.length - 1] == '*' || this.POper[this.POper.length - 1] == '/') {
+
+    while (this.POper[this.POper.length - 1] == '*' || this.POper[this.POper.length - 1] == '/') {
+        //console.log("operadores", this.POper.pop());
+        //console.log("operandos", this.PilaO.pop());
+
         let right_operand = this.PilaO.pop();
         let right_type = this.PTypes.pop();
         let left_operand = this.PilaO.pop();
@@ -185,26 +190,30 @@ Armstrong.prototype.exitFactor = function(ctx) {
         let operator = this.POper.pop();
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
+            //console.log("l", left_type);
+            //console.log("r", right_type);
+            //console.log("op", operator);
+            //console.log("res", result_type);
             let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
             this.PilaO.push(result);
             this.PTypes.push(result_type);
         } else {
-            console.log("ERROR type mismatch");
+            console.log("ERROR, los tipos no concuerdan 4");
         }
     }
+
 
 }
 
 Armstrong.prototype.exitTermino = function(ctx) {
-    if (this.POper[this.POper.length - 1] == '+' || this.POper[this.POper.length - 1] == '-') {
+    while (this.POper[this.POper.length - 1] == '+' || this.POper[this.POper.length - 1] == '-') {
         let right_operand = this.PilaO.pop();
         let right_type = this.PTypes.pop();
         let left_operand = this.PilaO.pop();
         let left_type = this.PTypes.pop();
         let operator = this.POper.pop();
-
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
             let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
@@ -214,14 +223,14 @@ Armstrong.prototype.exitTermino = function(ctx) {
             this.PTypes.push(result_type);
             //If any operand were a temporal space, return it to avail
         } else {
-            console.log("ERROR type mismatch");
+            console.log("ERROR, los tipos no concuerdan 3");
         }
 
     }
 }
 
 Armstrong.prototype.exitExp = function(ctx) {
-    if (this.POper[this.POper.length - 1] == '==' || this.POper[this.POper.length - 1] == '<' || this.POper[this.POper.length - 1] == '>' || this.POper[this.POper.length - 1] == '!=') {
+    while (this.POper[this.POper.length - 1] == '==' || this.POper[this.POper.length - 1] == '<' || this.POper[this.POper.length - 1] == '>' || this.POper[this.POper.length - 1] == '!=') {
         let right_operand = this.PilaO.pop();
         let right_type = this.PTypes.pop();
         let left_operand = this.PilaO.pop();
@@ -229,21 +238,21 @@ Armstrong.prototype.exitExp = function(ctx) {
         let operator = this.POper.pop();
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
-            let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
+            let result = this.MemoriaTem.setValue("bool", "Temporales", null);
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
             this.PilaO.push(result);
             this.PTypes.push(result_type);
             //If any operand were a temporal space, return it to avail
         } else {
-            console.log("ERROR type mismatch");
+            console.log("ERROR, los tipos no concuerdan 2");
         }
 
     }
 }
 
 Armstrong.prototype.exitExpbool = function(ctx) {
-    if (this.POper[this.POper.length - 1] == '&&' || this.POper[this.POper.length - 1] == '||') {
+    while (this.POper[this.POper.length - 1] == '&&' || this.POper[this.POper.length - 1] == '||') {
         let right_operand = this.PilaO.pop();
         let right_type = this.PTypes.pop();
         let left_operand = this.PilaO.pop();
@@ -253,14 +262,14 @@ Armstrong.prototype.exitExpbool = function(ctx) {
 
         let result_type = cubo[left_type][right_type][operator];
         if (result_type != "error") {
-            let result = this.MemoriaTem.setValue(result_type, "Temporales", null);
+            let result = this.MemoriaTem.setValue("bool", "Temporales", null);
             let newQuad = new quad(operator, left_operand, right_operand, result);
             this.Quads.push(newQuad);
             this.PilaO.push(result);
             this.PTypes.push(result_type);
             //If any operand were a temporal space, return it to avail
         } else {
-            console.log("ERROR type mismatch");
+            console.log("ERROR, los tipos no concuerdan 1");
         }
 
     }
@@ -269,6 +278,8 @@ Armstrong.prototype.exitExpbool = function(ctx) {
 
 Armstrong.prototype.enterTermino2 = function(ctx) {
     let operador = ctx.MULT() || ctx.DIV();
+    console.log("llega mul", operador.getText());
+
     if (operador) {
         operador = operador.getText();
         this.POper.push(operador);
@@ -284,7 +295,7 @@ Armstrong.prototype.enterExp1 = function(ctx) {
 }
 
 Armstrong.prototype.enterExpbool1 = function(ctx) {
-    let operador = ctx.IGUAL_IGUAL() || ctx.DIFERENTE_DE();
+    let operador = ctx.IGUAL_IGUAL() || ctx.DIFERENTE_DE() || ctx.MAS_QUE() || ctx.MENOS_QUE();
     if (operador) {
         operador = operador.getText();
         this.POper.push(operador);
@@ -303,8 +314,10 @@ Armstrong.prototype.enterExpresion1 = function(ctx) {
 
 Armstrong.prototype.enterLee_condicion = function(ctx) {
     let exp_type = this.PTypes.pop();
+    //console.log(exp_type);
+
     if (exp_type != "bool") {
-        console.log("Error, los tipos no concuerdan");
+        console.log("ERROR, los tipos no concuerdan", exp_type);
 
     } else {
         res = this.PilaO.pop();
@@ -317,7 +330,7 @@ Armstrong.prototype.enterLee_condicion = function(ctx) {
 
 Armstrong.prototype.exitCondicion = function(ctx) {
     end = this.PJumps.pop();
-    console.log("QUADS", this.Quads)
+    //console.log("QUADS", this.Quads)
     this.Quads = fill(end, this.Quads.length, this.Quads);
 
 
@@ -326,7 +339,7 @@ Armstrong.prototype.enterCondicion1 = function(ctx) {
     this.Quads.push(new quad("GOTO", null, null, null));
     falso = this.PJumps.pop();
     this.PJumps.push(this.Quads.length - 1);
-    console.log("QUADS", this.Quads);
+    //console.log("QUADS", this.Quads);
     this.Quads = fill(falso, this.Quads.length, this.Quads);
 }
 
@@ -348,8 +361,8 @@ Armstrong.prototype.enterLlamada = function(ctx) {
     if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
         this.llamadaCtx = ctx.ID().getText();
         parCount = 0;
-        ini = this.tablaFunc.dir[ctx.ID().getText()].tipo;
-        this.Quads.push(new quad("ERA", ini, null, null));
+        //ini = this.tablaFunc.dir[ctx.ID().getText()].tipo;
+        this.Quads.push(new quad("ERA", ctx.ID().getText(), null, null));
 
     } else {
         console.log('Error ya existe una función con ese nombre')
@@ -359,8 +372,8 @@ Armstrong.prototype.enterLlamada = function(ctx) {
 Armstrong.prototype.enterTerminaArg = function(ctx) {
     arg = this.PilaO.pop();
     argType = this.PTypes.pop();
-    if (this.tablaFunc.dir[this.llamadaCtx].parameterTable[this.parCount] == argType) {
-        this.Quads.push(new quad("PARAM", arg, null, this.parCount - 1));
+    if (this.tablaFunc.dir[this.llamadaCtx].parameterTable[this.parCount].tipo == argType) {
+        this.Quads.push(new quad("PARAM", arg, null, this.parCount));
         parCount++;
 
     } else {
@@ -372,8 +385,8 @@ Armstrong.prototype.enterTerminaArg = function(ctx) {
 
 Armstrong.prototype.exitLlamada = function(ctx) {
     if (parCount == this.tablaFunc.dir[this.llamadaCtx].parameterTable.length) {
-        this.Quads.push(new quad("GOSUB", this.llamadaCtx, this.Quads.length, this.tablaFunc.dir[this.llamadaCtx].inicio));
-        if (this.return) {
+        this.Quads.push(new quad("GOSUB", null, this.Quads.length + 1, this.tablaFunc.dir[this.llamadaCtx].inicio));
+        if (this.tablaFunc.dir[this.llamadaCtx].tipo != 'vacio') {
             let dirT = this.MemoriaTem.setValue(this.tablaFunc.dir[this.llamadaCtx].tipo, "Temporales", null);
             this.Quads.push(new quad("=", "regresa", null, dirT));
             this.PilaO.push(dirT);
@@ -473,7 +486,6 @@ Armstrong.prototype.enterIdvector_asigna = function(ctx) {
 Armstrong.prototype.exitAsignacion = function(ctx) {
     let oDer = this.PTypes.pop();
     let oIzq = this.PTypes.pop();
-    console.log("CUBO", oIzq, oDer, this.actualCtx)
     let result_type = cubo[oIzq][oDer]["="];
     let val = this.PilaO.pop();
     let dest = this.PilaO.pop();
@@ -491,7 +503,7 @@ Armstrong.prototype.exitBloquefunc1 = function(ctx) {
         let dirV = this.PilaO.pop();
         this.returnType = this.PTypes.pop();
         this.Quads.push(new quad("RETURN", dirV, null, null));
-        this.return = true;
+        //checar en vm tipo fun con tipo de ret
     } else {
         this.return = false;
     }
@@ -502,7 +514,7 @@ Armstrong.prototype.exitImprimir = function(ctx) {
     if (ctx.imprimir1().LETRERO() == null) {
         let dirV = this.PilaO.pop();
         this.PTypes.pop();
-        this.Quads.push(new quad("IMPRIMIR", dirV, null, null));
+        this.Quads.push(new quad("IMPRIMIR", null, null, dirV));
     } else {
 
         this.Quads.push(new quad("IMPRIMIR", null, null, ctx.imprimir1().LETRERO().getText()));
@@ -523,8 +535,14 @@ Armstrong.prototype.enterProgram = function(ctx) {
 Armstrong.prototype.exitProgram = function(ctx) {
     this.Quads.push(new quad("END", null, null, null));
 
+
+    this.Quads.forEach((element, i) => {
+        console.log(i, element);
+
+    });
+
     let MV = new machine(this.tablaFunc, this.Quads, this.Memoria);
     MV.start();
 }
 
-exports.Armstrong = Armstrong;
+exports.Armstrong = Armstrong

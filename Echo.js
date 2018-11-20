@@ -111,7 +111,7 @@ class echo {
 
     saveInAddress(val, address) {
         let [type, context] = this.getVarType(address);
-        this.funcs[nombreFunc][context][type][address - this.bases[context][type]] = val;
+        this.memoria[context][type][address - this.bases[context][type]] = val;
 
 
     }

@@ -19,7 +19,8 @@ class MaquinaVirtual {
         this.pilaScopes = [];
         this.actualCtx = "main";
         this.pilaScopesNames = [];
-        this.returnQuad = 0;
+        this.returnQuad = [];
+        this.inParams = false;
 
     }
 
@@ -128,12 +129,19 @@ class MaquinaVirtual {
     }
 
     suma(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left);
         let rightVal = this.getValByContext(right);
         let leftType = this.getTypeByContext(left);
         let rightType = this.getTypeByContext(right);
         if (loc >= 16000) {
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal + rightVal, loc), loc);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(this.castResult(leftVal + rightVal, loc), loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal + rightVal, loc), loc);
+            }
+
 
         } else {
             this.Memoria.saveInAddress(this.castResult(leftVal + rightVal, loc), loc);
@@ -143,12 +151,19 @@ class MaquinaVirtual {
     }
 
     resta(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left);
         let rightVal = this.getValByContext(right);
         let leftType = this.getTypeByContext(left);
         let rightType = this.getTypeByContext(right);
         if (loc >= 16000) {
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal - rightVal, loc), loc);
+
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(this.castResult(leftVal - rightVal, loc), loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal - rightVal, loc), loc);
+            }
         } else {
             this.Memoria.saveInAddress(this.castResult(leftVal - rightVal, loc), loc);
         }
@@ -156,12 +171,19 @@ class MaquinaVirtual {
     }
 
     mult(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left);
         let rightVal = this.getValByContext(right);
         let leftType = this.getTypeByContext(left);
         let rightType = this.getTypeByContext(right);
         if (loc >= 16000) {
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal * rightVal, loc), loc);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(this.castResult(leftVal * rightVal, loc), loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal * rightVal, loc), loc);
+            }
+
 
         } else {
             this.Memoria.saveInAddress(this.castResult(leftVal * rightVal, loc), loc);
@@ -172,13 +194,20 @@ class MaquinaVirtual {
     }
 
     div(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left);
         let rightVal = this.getValByContext(right);
         let leftType = this.getTypeByContext(left);
         let rightType = this.getTypeByContext(right);
 
         if (loc >= 16000) {
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal / rightVal, loc), loc);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(this.castResult(leftVal / rightVal, loc), loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal / rightVal, loc), loc);
+            }
+
         } else {
             this.Memoria.saveInAddress(this.castResult(leftVal / rightVal, loc), loc);
         }
@@ -187,6 +216,8 @@ class MaquinaVirtual {
     }
 
     ver(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left);
         if (loc >= 16000) {
             if (leftVal < loc || leftVal > 0) {
@@ -205,11 +236,18 @@ class MaquinaVirtual {
     }
 
     igualigual(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left)
         let rightVal = this.getValByContext(right)
         if (loc >= 16000) {
             let traduccion = leftVal == rightVal ? 'verdadero' : 'falso';
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(traduccion, loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            }
+
         } else {
             let traduccion = leftVal == rightVal ? 'verdadero' : 'falso';
             this.Memoria.saveInAddress(traduccion, loc);
@@ -217,11 +255,18 @@ class MaquinaVirtual {
     }
 
     menor(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left)
         let rightVal = this.getValByContext(right)
         if (loc >= 16000) {
             let traduccion = leftVal < rightVal ? 'verdadero' : 'falso';
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(traduccion, loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            }
+
         } else {
             let traduccion = leftVal < rightVal ? 'verdadero' : 'falso';
             this.Memoria.saveInAddress(traduccion, loc);
@@ -229,13 +274,20 @@ class MaquinaVirtual {
     }
 
     mayor(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left)
         let rightVal = this.getValByContext(right)
         if (loc >= 16000) {
             let traduccion = leftVal > rightVal ? 'verdadero' : 'falso';
             //console.log(this.pilaScopes[this.pilaScopes.length - 1]);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(traduccion, loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            }
 
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+
         } else {
             let traduccion = leftVal > rightVal ? 'verdadero' : 'falso';
             this.Memoria.saveInAddress(traduccion, loc);
@@ -243,11 +295,18 @@ class MaquinaVirtual {
     }
 
     diferente(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left)
         let rightVal = this.getValByContext(right)
         if (loc >= 16000) {
             let traduccion = leftVal != rightVal ? 'verdadero' : 'falso';
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(traduccion, loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            }
+
         } else {
             let traduccion = leftVal != rightVal ? 'verdadero' : 'falso';
             this.Memoria.saveInAddress(traduccion, loc);
@@ -255,13 +314,20 @@ class MaquinaVirtual {
     }
 
     and(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left)
         let rightVal = this.getValByContext(right)
         let tradL = leftVal == "verdadero" ? true : false;
         let tradR = rightVal == "verdadero" ? true : false;
         if (loc >= 16000) {
             let traduccion = tradL && tradR ? 'verdadero' : 'falso';
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(traduccion, loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            }
+
         } else {
             let traduccion = tradL && tradR ? 'verdadero' : 'falso';
             this.Memoria.saveInAddress(traduccion, loc);
@@ -269,13 +335,20 @@ class MaquinaVirtual {
     }
 
     or(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left)
         let rightVal = this.getValByContext(right)
         let tradL = leftVal == "verdadero" ? true : false;
         let tradR = rightVal == "verdadero" ? true : false;
         if (loc >= 16000) {
             let traduccion = tradL || tradR ? 'verdadero' : 'falso';
-            this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            if (this.inParams) {
+                this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(traduccion, loc);
+            } else {
+                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(traduccion, loc);
+            }
+
         } else {
             let traduccion = tradL || tradR ? 'verdadero' : 'falso';
             this.Memoria.saveInAddress(traduccion, loc);
@@ -287,6 +360,7 @@ class MaquinaVirtual {
     }
 
     gotof(left, right, loc) {
+            left = this.checkBaseDir(left);
             let leftVal = this.getValByContext(left);
             //console.log(leftVal);
 
@@ -297,6 +371,7 @@ class MaquinaVirtual {
         ////////////////////////////////////////////////
     era(left, right, loc) { //SOS
         this.pilaScopes.push(new memTemp());
+        this.inParams = true;
         this.actualCtx = left;
         this.pilaScopesNames.push(this.actualCtx);
 
@@ -304,21 +379,33 @@ class MaquinaVirtual {
     }
 
     param(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         let leftVal;
         if (left >= 16000) {
             leftVal = this.pilaScopes[this.pilaScopes.length - 2].getValue(left);
         } else {
             leftVal = this.Memoria.getValue(left);
         }
+        //console.log("parametro", leftVal);
+        if (leftVal == null) {
+            console.log("frjefnenvoernvsjkfnjkrvnefvnjertrinjeinerinerikneriknerfivnvf");
+
+            throw new Error("lefVal es nan");
+        }
+
         this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(leftVal, this.tablaFunc.dir[this.actualCtx].parameterTable[loc].dir_virtual);
     }
 
     gosub(left, right, loc) {
-        this.returnQuad = right - 1;
+        this.returnQuad.push(right - 1);
         this.index = loc - 1;
+        this.inParams = false;
+
     }
 
     return (left, right, loc) {
+        left = this.checkBaseDir(left);
         let leftVal = this.getValByContext(left);
         this.globalVal = leftVal;
     }
@@ -329,7 +416,7 @@ class MaquinaVirtual {
 
         //console.log(this.pilaScopesNames[this.pilaScopesNames.length - 1]);
         if (this.pilaScopesNames[this.pilaScopesNames.length - 1] != "main") {
-            this.index = this.returnQuad;
+            this.index = this.returnQuad.pop();
         }
 
         this.pilaScopesNames.pop();
@@ -337,14 +424,20 @@ class MaquinaVirtual {
     }
 
     igual(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         if (loc >= 16000) {
             if (left == "regresa") {
                 this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(this.globalVal, loc), loc);
             } else {
                 let leftVal = this.getValByContext(left);
                 //console.log("LEFT VAL", left, leftVal);
+                if (this.inParams) {
+                    this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(this.castResult(leftVal, loc), loc);
+                } else {
+                    this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal, loc), loc);
+                }
 
-                this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(leftVal, loc), loc);
             }
         } else {
             if (left == "regresa") {
@@ -358,6 +451,8 @@ class MaquinaVirtual {
     }
 
     imprimir(left, right, loc) {
+        left = this.checkBaseDir(left);
+        right = this.checkBaseDir(right);
         if (typeof loc == "string") {
             console.log(loc);
         } else {
@@ -367,7 +462,12 @@ class MaquinaVirtual {
 
     getValByContext(address) {
         if (address >= 16000) {
-            return this.pilaScopes[this.pilaScopes.length - 1].getValue(address);
+            if (this.inParams) {
+                return this.pilaScopes[this.pilaScopes.length - 2].getValue(address);
+            } else {
+                return this.pilaScopes[this.pilaScopes.length - 1].getValue(address);
+            }
+
         } else {
             return this.Memoria.getValue(address);
         }
@@ -375,15 +475,35 @@ class MaquinaVirtual {
 
     getTypeByContext(address) {
         if (address >= 16000) {
-            return this.pilaScopes[this.pilaScopes.length - 1].getVarType(address)[0];
+            if (this.inParams) {
+                return this.pilaScopes[this.pilaScopes.length - 2].getVarType(address)[0];
+            } else {
+                return this.pilaScopes[this.pilaScopes.length - 1].getVarType(address)[0];
+            }
+
         } else {
             return this.Memoria.getVarType(address)[0];
         }
     }
 
+    checkBaseDir(dir) {
+        if (typeof dir === 'string' || dir instanceof String && dir != "regresa" && dir != "falso" && dir != "verdadero") {
+            return this.getValByContext(parseInt(dir));
+        } else {
+            return dir;
+        }
+    }
+
     castResult(val, address) {
         if (address >= 16000) {
-            let tipo = this.pilaScopes[this.pilaScopes.length - 1].getVarType(address)[0];
+            //console.log(this.inParams);
+            let tipo;
+            if (this.inParams) {
+                tipo = this.pilaScopes[this.pilaScopes.length - 2].getVarType(address)[0];
+            } else {
+                tipo = this.pilaScopes[this.pilaScopes.length - 1].getVarType(address)[0];
+            }
+
             switch (tipo) {
                 case 'entero':
                     return parseInt(val);

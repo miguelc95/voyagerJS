@@ -1,31 +1,23 @@
 programa {
-    vacio hi (entero i) {
-    imprimir(i+1); 
-    }
 
-    entero bye () {
-    var bool a;
-    var entero b;
-    b = 1 - 3;
-    a = a  || falso;
-    si (a && falso){
-        b = 2+2;
-    }
-	regresa b; 
-    }
- 
+    
+    
    vacio main() {
-    var bool a;
-    var entero b;
-    b = 1 +3;
-    a = falso;
-    hi(1);
-    si ( falso  || verdadero){
-        b = 2+3;
-        imprimir("verdadero");
-    } sino {
-        imprimir("falso");
-    }
+       var entero arr[5];
+       var entero b;
+       b = -24;
+       arr[3]=3;
+       arr[0]=0;
+       arr[2]=arr[3];
+       arr[1]=1;
+       arr[4]=4;
+       imprimir(arr[0]);
+       imprimir(arr[1]);
+       imprimir(arr[2]);
+       imprimir(arr[3]);
+       imprimir(arr[5]);
+       imprimir(b);
    }
    
 }
+

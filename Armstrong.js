@@ -90,7 +90,12 @@ Armstrong.prototype.enterOperando = function(ctx) {
     let cteB = ctx.getText();
     let dirV = -1;
     if (ctx.CTE_E() != null) {
-        let cteE = parseInt(ctx.CTE_E().getText())
+        let cteE;
+        if (ctx.RESTA() != null) {
+            cteE = parseInt(ctx.CTE_E().getText()) * (-1);
+        } else {
+            cteE = parseInt(ctx.CTE_E().getText());
+        }
         if (this.dirConst[cteE] != undefined) {
             dirV = this.dirConst[cteE]
         } else {
@@ -101,7 +106,13 @@ Armstrong.prototype.enterOperando = function(ctx) {
         this.PilaO.push(dirV)
         this.PTypes.push('entero');
     } else if (ctx.CTE_F() != null) {
-        let cteF = parseFloat(ctx.CTE_F().getText())
+        let cteF
+        if (ctx.RESTA() != null) {
+            cteF = parseFloat(ctx.CTE_F().getText()) * (-1);
+        } else {
+            cteF = parseFloat(ctx.CTE_F().getText());
+        }
+
         if (this.dirConst[cteF] != undefined) {
             dirV = this.dirConst[cteF];
         } else {
@@ -278,7 +289,7 @@ Armstrong.prototype.exitExpbool = function(ctx) {
 
 Armstrong.prototype.enterTermino2 = function(ctx) {
     let operador = ctx.MULT() || ctx.DIV();
-    console.log("llega mul", operador.getText());
+    //console.log("llega mul", operador.getText());
 
     if (operador) {
         operador = operador.getText();
@@ -360,6 +371,7 @@ Armstrong.prototype.exitCiclo = function(ctx) {
 Armstrong.prototype.enterLlamada = function(ctx) {
     if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
         this.llamadaCtx = ctx.ID().getText();
+        this.POper.push("(");
         parCount = 0;
         //ini = this.tablaFunc.dir[ctx.ID().getText()].tipo;
         this.Quads.push(new quad("ERA", ctx.ID().getText(), null, null));
@@ -380,7 +392,7 @@ Armstrong.prototype.enterTerminaArg = function(ctx) {
         console.log('Error, tipo de argumento incorrecto')
     }
 
-
+    this.POper.pop();
 }
 
 Armstrong.prototype.exitLlamada = function(ctx) {
@@ -405,6 +417,7 @@ Armstrong.prototype.exitLlamada = function(ctx) {
 
 //vector_acceso  : ID ABRE_CORCHETE exp acceso_afterExp CIERRA_CORCHETE | /*epsilon*/;
 Armstrong.prototype.enterVector_acceso = function(ctx) {
+    console.log("entra a acceso");
     let esDim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
         return v.nombre == ctx.ID().getText() && v.dim != null;
     });
@@ -416,6 +429,8 @@ Armstrong.prototype.enterVector_acceso = function(ctx) {
 }
 
 Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
+    console.log("entra a afterexp");
+
     let vardim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
         return v.nombre == ctx.ID().getText();
     });
@@ -424,7 +439,7 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
     let auxType = this.PTypes.pop();
     let t = this.MemoriaTem.setValue("entero", "Temporales", null);
     this.Quads.push(new quad("+", aux1, vardim.dir_virtual, t));
-    this.PilaO.push("(t)");
+    this.PilaO.push("" + t + "");
     this.PTypes.push(vardim.tipo);
     this.POper.pop();
 }
@@ -434,26 +449,26 @@ idvector               : ID | vector;*/
 
 Armstrong.prototype.enterVector = function(ctx) {
     //checar si ya está declarada
-    let variable = new variable(ctx.ID().getText(), ctx.parentCtx.parentCtx.tipo().getText());
-    variable.dim = parseInt(ctx.CTE_E());
+    let varD = new variable(ctx.ID().getText(), ctx.parentCtx.parentCtx.tipo().getText());
+    varD.dim = parseInt(ctx.CTE_E());
     let dirVB;
     if (this.actualCtx == '') {
-        dirVB = this.Memoria.setValue(ctx.parentCtx.tipo().getText(), "Globales", null);
+        dirVB = this.Memoria.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Globales", null);
         this.dirGlob[ctx.ID().getText()] = dirVB;
-        for (var i = 1; i < variable.dim; i++) {
-            this.Memoria.setValue(ctx.parentCtx.tipo().getText(), "Globales", null);
+        for (var i = 1; i < varD.dim; i++) {
+            this.Memoria.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Globales", null);
         }
     } else {
-        dirVB = this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
-        for (var i = 1; i < variable.dim; i++) {
-            this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
+        dirVB = this.MemoriaTem.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Locales", null);
+        for (var i = 1; i < varD.dim; i++) {
+            this.MemoriaTem.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Locales", null);
         }
 
     }
-    variable.dir_virtual = dirVB; //generar nueva dirección 
+    varD.dir_virtual = dirVB; //generar nueva dirección 
     //+ espacios para todo su tamaño
     //calcula la base para la sig variable dirBasae = dirbase+parseInt(ctx.CTE_E())
-    this.tablaFunc.dir[this.actualCtx].arrVariable.push(variable);
+    this.tablaFunc.dir[this.actualCtx].arrVariable.push(varD);
 }
 
 Armstrong.prototype.enterIdvector = function(ctx) {

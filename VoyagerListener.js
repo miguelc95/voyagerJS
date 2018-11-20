@@ -254,24 +254,6 @@ VoyagerListener.prototype.exitTerminaArg = function(ctx) {
 };
 
 
-// Enter a parse tree produced by VoyagerParser#expbool.
-VoyagerListener.prototype.enterExpbool = function(ctx) {
-};
-
-// Exit a parse tree produced by VoyagerParser#expbool.
-VoyagerListener.prototype.exitExpbool = function(ctx) {
-};
-
-
-// Enter a parse tree produced by VoyagerParser#expbool1.
-VoyagerListener.prototype.enterExpbool1 = function(ctx) {
-};
-
-// Exit a parse tree produced by VoyagerParser#expbool1.
-VoyagerListener.prototype.exitExpbool1 = function(ctx) {
-};
-
-
 // Enter a parse tree produced by VoyagerParser#expresion.
 VoyagerListener.prototype.enterExpresion = function(ctx) {
 };
@@ -287,6 +269,24 @@ VoyagerListener.prototype.enterExpresion1 = function(ctx) {
 
 // Exit a parse tree produced by VoyagerParser#expresion1.
 VoyagerListener.prototype.exitExpresion1 = function(ctx) {
+};
+
+
+// Enter a parse tree produced by VoyagerParser#expbool.
+VoyagerListener.prototype.enterExpbool = function(ctx) {
+};
+
+// Exit a parse tree produced by VoyagerParser#expbool.
+VoyagerListener.prototype.exitExpbool = function(ctx) {
+};
+
+
+// Enter a parse tree produced by VoyagerParser#expbool1.
+VoyagerListener.prototype.enterExpbool1 = function(ctx) {
+};
+
+// Exit a parse tree produced by VoyagerParser#expbool1.
+VoyagerListener.prototype.exitExpbool1 = function(ctx) {
 };
 
 

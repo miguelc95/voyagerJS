@@ -50,6 +50,7 @@ class echo {
     }
 
     getVarType(address) {
+
         switch (true) {
             case address < 8000:
                 switch (true) {

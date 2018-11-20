@@ -14,6 +14,7 @@ class MaquinaVirtual {
         this.Quads = Quads;
         this.Memoria = Memoria;
         this.globalVal = -1;
+        this.globalType = "";
         this.index = 0;
         this.colaParams = [];
         this.pilaScopes = [];
@@ -29,8 +30,6 @@ class MaquinaVirtual {
         this.pilaScopesNames.push(this.actualCtx);
         while (this.index < this.Quads.length) {
             let currQuad = this.Quads[this.index];
-            //console.log(this.index);
-
             //console.log(this.index)
             switch (currQuad.code) {
                 case '+':
@@ -106,7 +105,6 @@ class MaquinaVirtual {
                     break;
 
                 case 'RETURN':
-                    //falta
                     this.return(currQuad.left, currQuad.right, currQuad.loc);
                     break;
 
@@ -216,20 +214,10 @@ class MaquinaVirtual {
         left = this.checkBaseDir(left);
         right = this.checkBaseDir(right);
         let leftVal = this.getValByContext(left);
-        if (loc >= 16000) {
-            if (leftVal < loc || leftVal > 0) {
-                return true;
-            } else {
-                throw new Error(`Indice fuera de rango ${loc}`);
-            }
-        } else {
-            if (leftVal < loc || leftVal > 0) {
-                return true;
-            } else {
-                throw new Error(`Indice fuera de rango ${loc}`);
-            }
-        }
 
+        if (leftVal >= loc || leftVal < 0) {
+            throw "Índice " + leftVal + " fuera de rango";
+        }
     }
 
     igualigual(left, right, loc) {
@@ -386,9 +374,8 @@ class MaquinaVirtual {
         }
         //console.log("parametro", leftVal);
         if (leftVal == null) {
-            console.log("frjefnenvoernvsjkfnjkrvnefvnjertrinjeinerinerikneriknerfivnvf");
 
-            throw new Error("lefVal es nan");
+            throw "lefVal es nan";
         }
 
         this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(leftVal, this.tablaFunc.dir[this.actualCtx].parameterTable[loc].dir_virtual);
@@ -404,7 +391,13 @@ class MaquinaVirtual {
     return (left, right, loc) {
         left = this.checkBaseDir(left);
         let leftVal = this.getValByContext(left);
+        let leftValType = this.getTypeByContext(left);
+        //checar tab
+        if (this.tablaFunc.dir[this.pilaScopesNames[this.pilaScopesNames.length - 1]].tipo != this.getTypeByContext(left)) {
+            throw "El tipio de valor de regreso de la función no es el esperado";
+        }
         this.globalVal = leftVal;
+        this.globalType = leftValType;
     }
 
     endproc(left, right, loc) {
@@ -423,12 +416,15 @@ class MaquinaVirtual {
     igual(left, right, loc) {
         left = this.checkBaseDir(left);
         loc = this.checkBaseDir(loc);
+        let type = this.getTypeByContext(loc);
         if (loc >= 16000) {
             if (left == "regresa") {
+                if (type != this.globalType) {
+                    throw "Error de tipos en la asignación";
+                }
                 this.pilaScopes[this.pilaScopes.length - 1].saveInAddress(this.castResult(this.globalVal, loc), loc);
             } else {
                 let leftVal = this.getValByContext(left);
-                //console.log("LEFT VAL", left, leftVal);
                 if (this.inParams) {
                     this.pilaScopes[this.pilaScopes.length - 2].saveInAddress(this.castResult(leftVal, loc), loc);
                 } else {
@@ -438,6 +434,9 @@ class MaquinaVirtual {
             }
         } else {
             if (left == "regresa") {
+                if (type != this.globalType) {
+                    throw "Error de tipos en la asignación";
+                }
                 this.Memoria.saveInAddress(this.castResult(this.globalVal, loc), loc);
             } else {
                 let leftVal = this.getValByContext(left);
@@ -485,8 +484,9 @@ class MaquinaVirtual {
     }
 
     checkBaseDir(dir) {
+        //console.log(dir);
 
-        if (typeof dir === 'string' || dir instanceof String && dir != "regresa" && dir != "falso" && dir != "verdadero") {
+        if ((typeof dir == 'string' || dir instanceof String) && dir != "regresa" && dir != "falso" && dir != "verdadero") {
             //console.log(dir);
             //console.log("dir real", this.getValByContext(parseInt(dir)));
             return this.getValByContext(parseInt(dir));
@@ -535,4 +535,4 @@ class MaquinaVirtual {
 
 }
 
-exports.MaquinaVirtual = MaquinaVirtual
+exports.MaquinaVirtual = MaquinaVirtual;

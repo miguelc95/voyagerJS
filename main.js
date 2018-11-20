@@ -21,5 +21,10 @@ fs.readFile(filename, 'utf8', function(err, data) {
     parser.buildParseTrees = true;
     var tree = parser.voyager();
     var printer = new Armstrong();
-    antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
+    try {
+        antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
+    } catch (e) {
+        console.log(e);
+    }
+
 });

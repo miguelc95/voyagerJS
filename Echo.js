@@ -12,8 +12,8 @@ class echo {
         this.memoria['Globales'] = [];
         this.memoria['Constantes'] = [];
 
-        this.memoria['Globales']['int'] = [];
-        this.memoria['Globales']['float'] = [];
+        this.memoria['Globales']['entero'] = [];
+        this.memoria['Globales']['flotante'] = [];
         this.memoria['Globales']['char'] = [];
         this.memoria['Globales']['bool'] = [];
 
@@ -107,6 +107,8 @@ class echo {
     }
 
     setValue(type, context, value) {
+        //console.log("context", context, "type", type);
+
         this.memoria[context][type].push(value);
         return this.bases[context][type] + this.memoria[context][type].length - 1;
     }

@@ -1,9 +1,28 @@
-programa{
-    vacio  hi  () {
+programa {
+    var flotante arr[3];
+    var entero i;
 
+    vacio initArr(){
+        i= 0;
+        mientras(i<3){
+            arr[i]=i+0.5;
+            i=i+1;
+        }
+    }
+   
+   vacio imprimeArr(entero size){
+        i=0;
+        mientras(i<size){
+            imprimir(arr[i]);
+            i=i+1;
+        }
     }
 
-    vacio main(){
-    }
+   vacio main() { 
+        
+        initArr();
+        imprimeArr(3);
+        
+   }
+
 }
-

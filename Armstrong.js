@@ -93,7 +93,6 @@ Armstrong.prototype.enterOperando = function(ctx) {
 
             let cteE;
             if (ctx.RESTA()) {
-                //console.log("operando", ctx.RESTA().getText(), ctx.CTE_E().getText());
                 cteE = parseInt(ctx.CTE_E().getText()) * (-1);
             } else {
                 cteE = parseInt(ctx.CTE_E().getText());
@@ -167,8 +166,8 @@ Armstrong.prototype.enterOperando = function(ctx) {
                 this.PilaO.push(v.dir_virtual);
                 this.PTypes.push(v.tipo);
             } else if (this.dirGlob[id] != undefined) {
-                let [type, context] = this.getVarType(this.dirGlob[id]);
-                this.PilaO.push(this.dirGlob[id]);
+                let [type, context] = this.Memoria.getVarType(this.dirGlob[id].dir_virtual);
+                this.PilaO.push(this.dirGlob[id].dir_virtual);
                 this.PTypes.push(type);
             } else {
                 this.error = true;
@@ -469,6 +468,9 @@ Armstrong.prototype.enterVector_acceso = function(ctx) {
         let esDim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
             return v.nombre == ctx.ID().getText() && v.dim != null;
         });
+        if (esDim == null) {
+            esDim = this.dirGlob[ctx.ID().getText()];
+        }
         if (esDim != null) {
             this.POper.push("[");
         } else {
@@ -484,6 +486,9 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
         let vardim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
             return v.nombre == ctx.parentCtx.ID().getText();
         });
+        if (vardim == null) {
+            vardim = this.dirGlob[ctx.parentCtx.ID().getText()];
+        }
         //Mandar error si exp no es entera
         if (this.PTypes[this.PilaO.length - 1] != "entero") {
             this.error = true;
@@ -514,7 +519,7 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
 
 /*declaracion            : VAR tipo idvector SEMI_COLON;
 idvector               : ID | vector;*/
-
+//vector                 : ID ABRE_CORCHETE CTE_E CIERRA_CORCHETE;
 Armstrong.prototype.enterVector = function(ctx) {
     if (!this.error) {
         //checar si ya está declarada
@@ -522,20 +527,22 @@ Armstrong.prototype.enterVector = function(ctx) {
         varD.dim = parseInt(ctx.CTE_E());
         let dirVB;
         if (this.actualCtx == '') {
+            this.dirGlob[ctx.ID().getText()] = varD;
             dirVB = this.Memoria.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Globales", null);
-            this.dirGlob[ctx.ID().getText()] = dirVB;
+            this.dirGlob[ctx.ID().getText()].dir_virtual = dirVB;
             for (var i = 1; i < varD.dim; i++) {
                 this.Memoria.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Globales", null);
             }
         } else {
             dirVB = this.MemoriaTem.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Locales", null);
+            varD.dir_virtual = dirVB;
+            this.tablaFunc.dir[this.actualCtx].arrVariable.push(varD);
             for (var i = 1; i < varD.dim; i++) {
                 this.MemoriaTem.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Locales", null);
             }
 
         }
-        varD.dir_virtual = dirVB;
-        this.tablaFunc.dir[this.actualCtx].arrVariable.push(varD);
+
     }
 
 }
@@ -546,12 +553,16 @@ Armstrong.prototype.enterIdvector = function(ctx) {
             //checar si ya está declarada
             let varObj = new variable(ctx.ID().getText(), ctx.parentCtx.tipo().getText());
             if (this.actualCtx == '') {
+
+
                 varObj.dir_virtual = this.Memoria.setValue(ctx.parentCtx.tipo().getText(), "Globales", null);
-                this.dirGlob[ctx.ID().getText()] = varObj.dir_virtual;
+                this.dirGlob[ctx.ID().getText()] = varObj;
             } else {
                 varObj.dir_virtual = this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
+                this.tablaFunc.dir[this.actualCtx].arrVariable.push(varObj);
             }
-            this.tablaFunc.dir[this.actualCtx].arrVariable.push(varObj);
+
+
         }
     }
 
@@ -562,9 +573,14 @@ idvector_asigna        : ID | vector_acceso;*/
 Armstrong.prototype.enterIdvector_asigna = function(ctx) {
     if (!this.error) {
         if (ctx.ID() != null) {
+
             let variable = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
                 return v.nombre == ctx.ID().getText();
             });
+            if (variable == null) {
+                variable = this.dirGlob[ctx.ID().getText()];
+            }
+
             this.PilaO.push(variable.dir_virtual);
             this.PTypes.push(variable.tipo);
         }
@@ -621,7 +637,7 @@ Armstrong.prototype.exitImprimir = function(ctx) {
 Armstrong.prototype.exitFunc = function(ctx) {
     if (!this.error) {
         this.Quads.push(new quad("ENDPROC", null, null, null));
-        this.actualCtx = 'global';
+        this.actualCtx = '';
     }
 
 

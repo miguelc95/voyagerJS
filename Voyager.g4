@@ -66,7 +66,7 @@ termino2               : MULT factor termino2 | DIV factor termino2 |/*epsilon*/
 
 factor                 : ABRE_PAREN expresion CIERRA_PAREN | operando;
 
-operando               : 'verdadero' | 'falso' | (RESTA)? CTE_E |(RESTA)? CTE_F | CTE_C | llamada | ID |  vector_acceso;
+operando               : 'verdadero' | 'falso' | (RESTA)? CTE_E | (RESTA)? CTE_F | CTE_C | llamada | ID |  vector_acceso;
 
 vector_acceso          : ID ABRE_CORCHETE exp acceso_afterExp CIERRA_CORCHETE;
 acceso_afterExp        :  /*epsilon*/;

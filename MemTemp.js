@@ -30,7 +30,7 @@ class MemTemp {
 
         this.bases['Temporales']['entero'] = 24000
         this.bases['Temporales']['flotante'] = 26000
-        this.bases['Temporales']['char'] = 280000
+        this.bases['Temporales']['char'] = 28000
         this.bases['Temporales']['bool'] = 30000
 
     }

@@ -89,8 +89,11 @@ Armstrong.prototype.enterOperando = function(ctx) {
         let cteB = ctx.getText();
         let dirV = -1;
         if (ctx.CTE_E() != null) {
+
+
             let cteE;
-            if (ctx.RESTA() != null) {
+            if (ctx.RESTA()) {
+                //console.log("operando", ctx.RESTA().getText(), ctx.CTE_E().getText());
                 cteE = parseInt(ctx.CTE_E().getText()) * (-1);
             } else {
                 cteE = parseInt(ctx.CTE_E().getText());
@@ -634,7 +637,7 @@ Armstrong.prototype.exitProgram = function(ctx) {
 
 
     this.Quads.forEach((element, i) => {
-        console.log(i, element);
+        //console.log(i, element);
 
     });
 

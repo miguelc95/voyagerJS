@@ -447,12 +447,11 @@ class MaquinaVirtual {
     }
 
     imprimir(left, right, loc) {
-        left = this.checkBaseDir(left);
-        right = this.checkBaseDir(right);
-        loc = this.checkBaseDir(loc);
-        if (typeof loc == "string") {
+        //console.log(parseInt(loc));
+        if (isNaN(parseInt(loc))) {
             console.log(loc);
         } else {
+            loc = this.checkBaseDir(loc);
             console.log(this.getValByContext(loc));
         }
     }
@@ -487,7 +486,7 @@ class MaquinaVirtual {
         //console.log(dir);
 
         if ((typeof dir == 'string' || dir instanceof String) && dir != "regresa" && dir != "falso" && dir != "verdadero") {
-            //console.log(dir);
+            //console.log("checkstring dir", dir);
             //console.log("dir real", this.getValByContext(parseInt(dir)));
             return this.getValByContext(parseInt(dir));
         } else {

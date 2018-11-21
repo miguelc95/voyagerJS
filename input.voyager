@@ -1,28 +1,9 @@
-programa {
+programa{
+    vacio  hi  () {
 
-    entero uno(entero a) {
-       
-       regresa a;
-   }
-    
-   vacio main() {
-       
-       var flotante arr[5];
-       var entero i;
-       i = 0;
-       
-       mientras(i<5){
-           arr[i]=0;
-           i=i+1;
-       }
-       arr[uno(2)]=uno(3);
-           
-       i = 0;
-       mientras(i<5){
-           imprimir(arr[i]);
-           i=i+1;
-       }
-   }
-   
+    }
+
+    vacio main(){
+    }
 }
 

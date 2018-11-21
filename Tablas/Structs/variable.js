@@ -5,7 +5,6 @@ class variable {
         this.tipo = tipo;
         this.dir_virtual = -11;
         this.dim = null;
-
     }
 }
 exports.variable = variable;

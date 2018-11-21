@@ -12,14 +12,14 @@ class echo {
         this.memoria['Globales'] = [];
         this.memoria['Constantes'] = [];
 
-        this.memoria['Globales']['Int'] = [];
-        this.memoria['Globales']['Float'] = [];
-        this.memoria['Globales']['Char'] = [];
-        this.memoria['Globales']['Bool'] = [];
+        this.memoria['Globales']['int'] = [];
+        this.memoria['Globales']['float'] = [];
+        this.memoria['Globales']['char'] = [];
+        this.memoria['Globales']['bool'] = [];
 
         this.memoria['Constantes']['entero'] = [];
         this.memoria['Constantes']['flotante'] = [];
-        this.memoria['Constantes']['Char'] = [];
+        this.memoria['Constantes']['char'] = [];
         this.memoria['Constantes']['bool'] = [];
 
         //BASES
@@ -33,7 +33,7 @@ class echo {
 
         this.bases['Constantes']['entero'] = 8000
         this.bases['Constantes']['flotante'] = 10000
-        this.bases['Constantes']['char'] = 120000
+        this.bases['Constantes']['char'] = 12000
         this.bases['Constantes']['bool'] = 14000
     }
 
@@ -100,6 +100,8 @@ class echo {
     }
 
     getValue(address) {
+        //console.log("getVal", address);
+
         let [type, context] = this.getVarType(address);
         return this.memoria[context][type][address - this.bases[context][type]];
     }

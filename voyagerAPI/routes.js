@@ -1,14 +1,14 @@
 var antlr4 = require('antlr4');
-var VoyagerLexer = require('./compiler/VoyagerLexer').VoyagerLexer;
-var VoyagerListener = require('./compiler/VoyagerListener').VoyagerListener;
+var VoyagerLexer = require('./VoyagerLexer').VoyagerLexer;
+var VoyagerListener = require('./VoyagerListener').VoyagerListener;
 
-var VoyagerParser = require('./compiler/VoyagerParser').VoyagerParser;
-var Armstrong = require('./compiler/Armstrong').Armstrong;
+var VoyagerParser = require('./VoyagerParser').VoyagerParser;
+var Armstrong = require('./Armstrong').Armstrong;
 
 var appRouter = function (app) {
     app.get("/", function(req, res) {
         var code = req.query.code;
-        code = 'programa{\n'+code;
+        code = '\nprograma{\n'+code;
         code = code+ '\n}\n'
         console.log(code);
         
@@ -18,7 +18,7 @@ var appRouter = function (app) {
         var parser = new VoyagerParser(tokens);
         parser.buildParseTrees = true;
         var tree = parser.voyager();
-        var printer = new Armstrong();
+        var printer = new Armstrong(results);
         try {
             antlr4.tree.ParseTreeWalker.DEFAULT.walk(printer, tree);
         } catch (e) {

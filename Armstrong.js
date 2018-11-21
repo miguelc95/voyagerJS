@@ -9,6 +9,8 @@ const machine = require('./MaquinaVirtual').MaquinaVirtual;
 const echo = require('./echo').echo;
 const memTemp = require('./MemTemp').MemTemp;
 
+//Clase dedicada a sobrescribir los métodos del listener y así colocar las acciones que necesitemos 
+//cuando el arbol de parseo entre y salga de cada regla
 var Armstrong = function() {
     this.tablaFunc = new dirFunc();
     this.listFunc = [];
@@ -36,18 +38,23 @@ var Armstrong = function() {
 };
 
 
-
+//función que le pone un valor a la última casilla de un cuadruplo
+//recibe:
+//target: el cuadruplo que se quiere rellenar
+//dir: que valor con el que se va a rellenar
+//quadsref: la cola de cuadruplos
 function fill(target, dir, quadsRef) {
     quadsRef[target].loc = dir;
 
     return quadsRef;
 }
 
-// continue inheriting default listener
+// Hereda de Listener
 Armstrong.prototype = Object.create(VoyagerListener.prototype);
 Armstrong.prototype.constructor = Armstrong;
 
-
+//Funciónque se accesa al entrar a la regla Func
+//se hrevisa si ya se declaró una función si no se delcara
 Armstrong.prototype.enterFunc = function(ctx) {
     if (!this.error) {
         this.MemoriaTem = new memTemp();
@@ -76,6 +83,8 @@ Armstrong.prototype.enterFunc = function(ctx) {
 
 }
 
+//Funciónque se accesa al entrar al punto neuralgico en delaración de función
+//se guarda  la dirección de iniciio de la función
 Armstrong.prototype.enterAfterDeclaracion = function(ctx) {
     if (!this.error) {
         this.tablaFunc.dir[this.actualCtx].numVars = this.tablaFunc.dir[this.actualCtx].arrVariable.length;
@@ -83,7 +92,8 @@ Armstrong.prototype.enterAfterDeclaracion = function(ctx) {
     }
 }
 
-
+//Funciónque se accesa al entrar a la regla operando
+//aquí se guarda el valor de la constante en en la pila de operandos pendientes y su tipo en PTypes
 Armstrong.prototype.enterOperando = function(ctx) {
     if (!this.error) {
         let cteB = ctx.getText();
@@ -181,6 +191,8 @@ Armstrong.prototype.enterOperando = function(ctx) {
 
 }
 
+//Funciónque se accesa al entrar a la regla Factor
+//aquí se coloca el fondo falso si es que viene un '()' para poder tener operaciones anidadas
 Armstrong.prototype.enterFactor = function(ctx) {
     if (!this.error) {
         if (ctx.ABRE_PAREN() != null) {
@@ -190,6 +202,10 @@ Armstrong.prototype.enterFactor = function(ctx) {
 
 }
 
+//Funciónque se accesa al salir de la regla factor
+//Aquí se elimina el fondo falso de la pila de operadores si es que es necesario
+//también se revisa si hay * o / pendientes para realizar
+//se comprueban los tipos de la operación
 Armstrong.prototype.exitFactor = function(ctx) {
     if (!this.error) {
         if (ctx.CIERRA_PAREN() != null) {
@@ -222,6 +238,9 @@ Armstrong.prototype.exitFactor = function(ctx) {
 
 }
 
+//Funciónque se accesa al salir de la regla factor
+//también se revisa si hay + o - pendientes para realizar
+//se comprueban los tipos de la operación
 Armstrong.prototype.exitTermino = function(ctx) {
     if (!this.error) {
         while (this.POper[this.POper.length - 1] == '+' || this.POper[this.POper.length - 1] == '-') {
@@ -246,6 +265,9 @@ Armstrong.prototype.exitTermino = function(ctx) {
     }
 }
 
+//Funciónque se accesa al salir de la regla factor
+//también se revisa si hay operadores de comparación pendientes para realizar
+//se comprueban los tipos de la operación
 Armstrong.prototype.exitExp = function(ctx) {
     if (!this.error) {
         while (this.POper[this.POper.length - 1] == '==' || this.POper[this.POper.length - 1] == '<' || this.POper[this.POper.length - 1] == '>' || this.POper[this.POper.length - 1] == '!=') {
@@ -271,6 +293,9 @@ Armstrong.prototype.exitExp = function(ctx) {
     }
 }
 
+//Funciónque se accesa al salir de la regla factor
+//también se revisa si hay && o || pendientes para realizar
+//se comprueban los tipos de la operación
 Armstrong.prototype.exitExpbool = function(ctx) {
     if (!this.error) {
         while (this.POper[this.POper.length - 1] == '&&' || this.POper[this.POper.length - 1] == '||') {
@@ -298,7 +323,10 @@ Armstrong.prototype.exitExpbool = function(ctx) {
 
 }
 
-
+//Funciónque se accesa al entrar a termino 2
+//termino                : factor termino2;
+//termino2               : MULT factor termino2 | DIV factor termino2 |/*epsilon*/;
+//aquí se revisa si viene algún * o / para meter a la pila
 Armstrong.prototype.enterTermino2 = function(ctx) {
     if (!this.error) {
         let operador = ctx.MULT() || ctx.DIV();
@@ -311,6 +339,10 @@ Armstrong.prototype.enterTermino2 = function(ctx) {
 
 }
 
+//Funciónque se accesa al entrar a exp1
+//exp                    : termino exp1;
+//exp1                   : SUMA termino exp1 | RESTA termino exp1 |/*epsilon*/;
+//aquí se revisa si viene algún + o -  para meter a la pila
 Armstrong.prototype.enterExp1 = function(ctx) {
     if (!this.error) {
         let operador = ctx.SUMA() || ctx.RESTA();
@@ -322,6 +354,8 @@ Armstrong.prototype.enterExp1 = function(ctx) {
 
 }
 
+//Funciónque se accesa al entrar a expbool1
+//aquí se revisa si viene algún operador de comparación para meter a la pila
 Armstrong.prototype.enterExpbool1 = function(ctx) {
     if (!this.error) {
         let operador = ctx.IGUAL_IGUAL() || ctx.DIFERENTE_DE() || ctx.MAS_QUE() || ctx.MENOS_QUE();
@@ -333,6 +367,10 @@ Armstrong.prototype.enterExpbool1 = function(ctx) {
 
 }
 
+//Funciónque se accesa al entrar a expresion1
+//expresion              : expbool expresion1;
+//expresion1             : AND expbool expresion1 | OR expbool expresion1 |/*epsilon*/;
+//aquí se revisa si viene algún && o || para meter a la pila
 Armstrong.prototype.enterExpresion1 = function(ctx) {
     if (!this.error) {
         let operador = ctx.AND() || ctx.OR();
@@ -345,7 +383,8 @@ Armstrong.prototype.enterExpresion1 = function(ctx) {
 
 }
 
-
+//Funciónque se accesa al salir de condicion
+//hace un fill de en el gotof con el contador actual
 Armstrong.prototype.exitCondicion = function(ctx) {
     if (!this.error) {
         end = this.PJumps.pop();
@@ -355,6 +394,9 @@ Armstrong.prototype.exitCondicion = function(ctx) {
 
 
 }
+
+//Funciónque se accesa al entrar a condicion1
+//genera un GOTO antes del el para saltar ese bloque si se entró a la parte verdadera  de la condición
 Armstrong.prototype.enterCondicion1 = function(ctx) {
     if (!this.error) {
         this.Quads.push(new quad("GOTO", null, null, null));
@@ -365,6 +407,8 @@ Armstrong.prototype.enterCondicion1 = function(ctx) {
 
 }
 
+//Funciónque se accesa al entrar al punto neuralgico después de leer una condición
+//revisa si la expresión fue booleana y generar el cuadruplo de GOTOF
 Armstrong.prototype.enterLee_condicion = function(ctx) {
     if (!this.error) {
         let exp_type = this.PTypes.pop();
@@ -385,6 +429,8 @@ Armstrong.prototype.enterLee_condicion = function(ctx) {
 }
 
 
+//Funciónque se accesa al entrar a ciclo
+//mete a la pila de saltos pendientes la migaja de dónde empiza la condición
 Armstrong.prototype.enterCiclo = function(ctx) {
     if (!this.error) {
         this.PJumps.push(this.Quads.length);
@@ -392,6 +438,8 @@ Armstrong.prototype.enterCiclo = function(ctx) {
 
 }
 
+//Funciónque se accesa al salir de ciclo
+//genera un GOTO a la condición y rellena el GOTOF con el cuadruplo que le sigue al ciclo
 Armstrong.prototype.exitCiclo = function(ctx) {
     if (!this.error) {
         end = this.PJumps.pop();
@@ -403,6 +451,8 @@ Armstrong.prototype.exitCiclo = function(ctx) {
 
 }
 
+//Funciónque se accesa al entrar a una llamada a función
+//revisa que la función exista y genera un ERA
 Armstrong.prototype.enterLlamada = function(ctx) {
     if (!this.error) {
         if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
@@ -420,6 +470,8 @@ Armstrong.prototype.enterLlamada = function(ctx) {
 
 }
 
+//Funciónque se accesa al terminar de resolver un argumento de los que se mandarán en la llamada
+//Genera los cuadruplos de param y checa que los tipos de parametro concuerden
 Armstrong.prototype.enterTerminaArg = function(ctx) {
     if (!this.error) {
         arg = this.PilaO.pop();
@@ -435,13 +487,16 @@ Armstrong.prototype.enterTerminaArg = function(ctx) {
             }
         } else {
             this.error = true;
-            throw "ERROR al llamar a " + this.llamadaCtx + ", el número de parametros no coincide";
+            throw "ERROR al llamar a " + this.llamadaCtx + ", el número de parámetros no coincide";
         }
         this.POper.pop();
     }
 
 }
 
+//Funciónque se accesa al salir de una llamada a dunción
+//revisa que el número de parametros enviados si sea el adecuado
+//y genera el gosub y el = del retorno(si es que se llama a una función con valor de regreso)
 Armstrong.prototype.exitLlamada = function(ctx) {
     if (!this.error) {
         if (this.parCount == this.tablaFunc.dir[this.llamadaCtx].parameterTable.length) {
@@ -460,13 +515,14 @@ Armstrong.prototype.exitLlamada = function(ctx) {
 
         } else {
             this.error = true;
-            throw "ERROR al llamar a " + this.llamadaCtx + ", el número de parametros no coincide";
+            throw "ERROR al llamar a " + this.llamadaCtx + ", el número de parámetros no coincide";
         }
     }
 
 }
 
-//vector_acceso  : ID ABRE_CORCHETE exp acceso_afterExp CIERRA_CORCHETE | /*epsilon*/;
+//Funciónque se accesa al entrar al acceso de un vector
+//revisa que la varible sea dimensionada y mete el fondo falso por si hay anidamiento
 Armstrong.prototype.enterVector_acceso = function(ctx) {
     if (!this.error) {
         let esDim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
@@ -485,6 +541,8 @@ Armstrong.prototype.enterVector_acceso = function(ctx) {
 
 }
 
+//Funciónque se accesa al teminar de resolver la expresion en el acceso al arreglo
+//revisa que sea de tipo entero  y genera los cuadruplos de verificación y suma con la dirección base
 Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
     if (!this.error) {
         let vardim = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
@@ -521,49 +579,78 @@ Armstrong.prototype.enterAcceso_afterExp = function(ctx) {
 
 }
 
-/*declaracion            : VAR tipo idvector SEMI_COLON;
-idvector               : ID | vector;*/
-//vector                 : ID ABRE_CORCHETE CTE_E CIERRA_CORCHETE;
+//Funciónque se accesa al entrar a la declaración de vector
+//genera una dirección base para el arreglo, la guarda y después genera el resto de las direcciones que necesite
+//revisa que el vector no esté declarado
 Armstrong.prototype.enterVector = function(ctx) {
     if (!this.error) {
-        //checar si ya está declarada
-        let varD = new variable(ctx.ID().getText(), ctx.parentCtx.parentCtx.tipo().getText());
-        varD.dim = parseInt(ctx.CTE_E());
-        let dirVB;
-        if (this.actualCtx == '') {
-            this.dirGlob[ctx.ID().getText()] = varD;
-            dirVB = this.Memoria.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Globales", null);
-            this.dirGlob[ctx.ID().getText()].dir_virtual = dirVB;
-            for (var i = 1; i < varD.dim; i++) {
-                this.Memoria.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Globales", null);
+        let varTemp;
+        let flag = true;
+        if (this.actualCtx != '') {
+            varTemp = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
+                return v.nombre == ctx.ID().getText();
+            });
+            flag = (varTemp == null);
+        }
+        if (this.dirGlob[ctx.ID().getText()] == null && flag) {
+            let varD = new variable(ctx.ID().getText(), ctx.parentCtx.parentCtx.tipo().getText());
+            varD.dim = parseInt(ctx.CTE_E());
+            let dirVB;
+            if (this.actualCtx == '') {
+                this.dirGlob[ctx.ID().getText()] = varD;
+                dirVB = this.Memoria.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Globales", null);
+                this.dirGlob[ctx.ID().getText()].dir_virtual = dirVB;
+                for (var i = 1; i < varD.dim; i++) {
+                    this.Memoria.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Globales", null);
+                }
+            } else {
+                dirVB = this.MemoriaTem.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Locales", null);
+                varD.dir_virtual = dirVB;
+                this.tablaFunc.dir[this.actualCtx].arrVariable.push(varD);
+                for (var i = 1; i < varD.dim; i++) {
+                    this.MemoriaTem.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Locales", null);
+                }
+
             }
         } else {
-            dirVB = this.MemoriaTem.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Locales", null);
-            varD.dir_virtual = dirVB;
-            this.tablaFunc.dir[this.actualCtx].arrVariable.push(varD);
-            for (var i = 1; i < varD.dim; i++) {
-                this.MemoriaTem.setValue(ctx.parentCtx.parentCtx.tipo().getText(), "Locales", null);
-            }
-
+            this.error = true;
+            throw 'ERROR, una variable con ese nombre ya está declarada';
         }
+
 
     }
 
 }
 
+//Funciónque se accesa al obtener un id en declaración
+//revisa si ya está declarado, le genera nuevas direcciones de memoria virtual
 Armstrong.prototype.enterIdvector = function(ctx) {
     if (!this.error) {
         if (ctx.ID() != null) {
-            //checar si ya está declarada
-            let varObj = new variable(ctx.ID().getText(), ctx.parentCtx.tipo().getText());
-            if (this.actualCtx == '') {
+            let varTemp;
+            let flag = true;
+            if (this.actualCtx != '') {
+                varTemp = this.tablaFunc.dir[this.actualCtx].arrVariable.find(function(v) {
+                    return v.nombre == ctx.ID().getText();
+                });
+                flag = (varTemp == null);
+            }
+            if (this.dirGlob[ctx.ID().getText()] == null && flag) {
+                //checar si ya está declarada
+                let varObj = new variable(ctx.ID().getText(), ctx.parentCtx.tipo().getText());
+                if (this.actualCtx == '') {
 
 
-                varObj.dir_virtual = this.Memoria.setValue(ctx.parentCtx.tipo().getText(), "Globales", null);
-                this.dirGlob[ctx.ID().getText()] = varObj;
+                    varObj.dir_virtual = this.Memoria.setValue(ctx.parentCtx.tipo().getText(), "Globales", null);
+                    this.dirGlob[ctx.ID().getText()] = varObj;
+                } else {
+                    varObj.dir_virtual = this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
+                    this.tablaFunc.dir[this.actualCtx].arrVariable.push(varObj);
+                }
+
             } else {
-                varObj.dir_virtual = this.MemoriaTem.setValue(ctx.parentCtx.tipo().getText(), "Locales", null);
-                this.tablaFunc.dir[this.actualCtx].arrVariable.push(varObj);
+                this.error = true;
+                throw 'ERROR, una variable con ese nombre ya está declarada';
             }
 
 
@@ -572,8 +659,8 @@ Armstrong.prototype.enterIdvector = function(ctx) {
 
 }
 
-/*asignacion             : idvector_asigna aferId IGUAL expresion SEMI_COLON;
-idvector_asigna        : ID | vector_acceso;*/
+//Funciónque se accesa al entrar a una asignación
+//mete la variable a la que se le asignará algo a la pila de operadores, y su tipo a la de tipos
 Armstrong.prototype.enterIdvector_asigna = function(ctx) {
     if (!this.error) {
         if (ctx.ID() != null) {
@@ -592,6 +679,8 @@ Armstrong.prototype.enterIdvector_asigna = function(ctx) {
 
 }
 
+//Funciónque se accesa al salir de asignación
+//genar el cuadruplo deasignación y checa si hay error de tipos
 Armstrong.prototype.exitAsignacion = function(ctx) {
     if (!this.error) {
         let oDer = this.PTypes.pop();
@@ -609,7 +698,8 @@ Armstrong.prototype.exitAsignacion = function(ctx) {
 
 }
 
-//bloquefunc1  : REGRESA expresion SEMI_COLON | /*epsilon*/;
+//Funciónque se accesa al encontrar un regresa
+//Genera un quadruplo de return 
 Armstrong.prototype.exitBloquefunc1 = function(ctx) {
     if (!this.error) {
         if (ctx.REGRESA() != null) {
@@ -624,6 +714,8 @@ Armstrong.prototype.exitBloquefunc1 = function(ctx) {
 
 }
 
+//Funciónque se accesa encontrar una llamad a imprimir
+//genera los cuadruplos necesarios
 Armstrong.prototype.exitImprimir = function(ctx) {
     if (!this.error) {
         if (ctx.imprimir1().LETRERO() == null) {
@@ -638,6 +730,8 @@ Armstrong.prototype.exitImprimir = function(ctx) {
 
 }
 
+//Funciónque se accesa al salir de una función
+//genera un Endproc y cambia el contexto actual al global
 Armstrong.prototype.exitFunc = function(ctx) {
     if (!this.error) {
         this.Quads.push(new quad("ENDPROC", null, null, null));
@@ -647,11 +741,15 @@ Armstrong.prototype.exitFunc = function(ctx) {
 
 }
 
+//Funciónque se accesa al inicio del programa
+//genera un goto al main
 Armstrong.prototype.enterProgram = function(ctx) {
     this.Quads.push(new quad("GOTO", null, null, null));
 
 }
 
+//Funciónque se accesa al salir del programa
+//genera el cuadruplo end
 Armstrong.prototype.exitProgram = function(ctx) {
     this.Quads.push(new quad("END", null, null, null));
 

@@ -408,7 +408,7 @@ Armstrong.prototype.enterLlamada = function(ctx) {
         if (this.tablaFunc.dir[ctx.ID().getText()] != undefined) {
             this.llamadaCtx = ctx.ID().getText();
             this.POper.push("(");
-            parCount = 0;
+            this.parCount = 0;
             //ini = this.tablaFunc.dir[ctx.ID().getText()].tipo;
             this.Quads.push(new quad("ERA", ctx.ID().getText(), null, null));
 
@@ -424,15 +424,19 @@ Armstrong.prototype.enterTerminaArg = function(ctx) {
     if (!this.error) {
         arg = this.PilaO.pop();
         argType = this.PTypes.pop();
-        if (this.tablaFunc.dir[this.llamadaCtx].parameterTable[this.parCount].tipo == argType) {
-            this.Quads.push(new quad("PARAM", arg, null, this.parCount));
-            parCount++;
+        if (this.parCount < this.tablaFunc.dir[this.llamadaCtx].parameterTable.length) {
+            if (this.tablaFunc.dir[this.llamadaCtx].parameterTable[this.parCount].tipo == argType) {
+                this.Quads.push(new quad("PARAM", arg, null, this.parCount));
+                this.parCount++;
 
+            } else {
+                this.error = true;
+                throw "ERROR, tipo de argumento incorrecto, se esperaba " + this.tablaFunc.dir[this.llamadaCtx].parameterTable[this.parCount].tipo;
+            }
         } else {
             this.error = true;
-            throw "ERROR, tipo de argumento incorrecto, se esperaba " + this.tablaFunc.dir[this.llamadaCtx].parameterTable[this.parCount].tipo;
+            throw "ERROR al llamar a " + this.llamadaCtx + ", el número de parametros no coincide";
         }
-
         this.POper.pop();
     }
 
@@ -440,7 +444,7 @@ Armstrong.prototype.enterTerminaArg = function(ctx) {
 
 Armstrong.prototype.exitLlamada = function(ctx) {
     if (!this.error) {
-        if (parCount == this.tablaFunc.dir[this.llamadaCtx].parameterTable.length) {
+        if (this.parCount == this.tablaFunc.dir[this.llamadaCtx].parameterTable.length) {
             this.Quads.push(new quad("GOSUB", null, this.Quads.length + 1, this.tablaFunc.dir[this.llamadaCtx].inicio));
             if (this.tablaFunc.dir[this.llamadaCtx].tipo != 'vacio') {
                 let dirT = this.MemoriaTem.setValue(this.tablaFunc.dir[this.llamadaCtx].tipo, "Temporales", null);
@@ -451,7 +455,7 @@ Armstrong.prototype.exitLlamada = function(ctx) {
 
             }
 
-            parCount = 0;
+            this.parCount = 0;
             this.llamadaCtx = "";
 
         } else {

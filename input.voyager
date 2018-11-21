@@ -1,16 +1,16 @@
 programa {
-    var flotante arr[3];
+    var entero arr[7];
     var entero i;
 
-    vacio initArr(){
-        i= 0;
-        mientras(i<3){
-            arr[i]=i+0.5;
+    vacio initArr(entero size){
+        i=0;
+        mientras(i<size){
+            arr[i]=i;
             i=i+1;
         }
     }
-   
-   vacio imprimeArr(entero size){
+
+    vacio imprimeArr(entero size){
         i=0;
         mientras(i<size){
             imprimir(arr[i]);
@@ -18,10 +18,35 @@ programa {
         }
     }
 
+
+    entero binarySearch(entero l, entero r, entero x){
+        var entero res;
+        var entero mid;
+        res = -1;
+        si(r>l || r==l){ 
+            mid = l + (r - l)/2; 
+            si (arr[mid] == x) {
+                res = mid;
+            }sino {
+                si (arr[mid] > x){
+                    res = binarySearch(l, mid-1, x);
+                } sino{
+                    res = binarySearch(mid+1, r, x);
+                }  
+            }
+            
+              
+        } 
+  
+        regresa res; 
+    }
+
    vacio main() { 
-        
-        initArr();
-        imprimeArr(3);
+        initArr(7);
+        imprimir("Arreglo desordenado");
+        imprimeArr(7);
+        imprimir("El número '4' se en cuentra en la posición:");
+        imprimir(binarySearch(0,6,4));
         
    }
 

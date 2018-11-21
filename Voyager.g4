@@ -47,9 +47,9 @@ imprimir1              : expresion | LETRERO;
 
 ciclo                  : MIENTRAS ABRE_PAREN expresion CIERRA_PAREN lee_condicion bloque;
 
-llamada                : ID ABRE_PAREN argumentos CIERRA_PAREN;
+llamada                : ID ABRE_PAREN (argumentos)? CIERRA_PAREN;
 
-argumentos             : expresion terminaArg (COMA expresion terminaArg )* |  /*epsilon*/;
+argumentos             : expresion terminaArg (COMA expresion terminaArg )* ;
 terminaArg             : /*epsilon*/;
 
 expresion              : expbool expresion1;

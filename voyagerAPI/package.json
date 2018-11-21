@@ -1,0 +1,17 @@
+{
+  "name": "voyagerapi",
+  "version": "1.0.0",
+  "description": "API for voyager compiler",
+  "main": "index.js",
+  "scripts": {
+    "test": "voyager"
+  },
+  "author": "IramDiaz MiguelCuellar",
+  "license": "ISC",
+  "dependencies": {
+    "antlr4": "^4.7.1",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.13"
+  }
+}
